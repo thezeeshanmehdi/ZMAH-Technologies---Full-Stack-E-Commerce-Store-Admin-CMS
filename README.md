@@ -1,7 +1,7 @@
 # 🛒 ZMAH Technologies - Full Stack E-Commerce & Admin CMS
 
 <p align="center">
-  <img src="frontend/assets/Logo@2x.png" alt="ZMAH Technologies Logo" width="220" />
+  <img src="frontend/assets/Sampal logo.png" alt="ZMAH Technologies Logo" width="220" />
 </p>
 
 <p align="center">
