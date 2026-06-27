@@ -76,16 +76,16 @@ graph TD
     <td align="center"><b>🛍️ Shop Grid & Filters</b></td>
   </tr>
   <tr>
-    <td><img src="https://drive.google.com/uc?export=view&id=1Bn4wJVzC4_WUSNfPclQWd_rDONrV4Jdp" width="400" alt="Homepage Screenshot" /></td>
-    <td><img src="https://drive.google.com/uc?export=view&id=1XffCgzIKQzd7cPNndbOh7LqP0M8NMcho" width="400" alt="Shop Grid Screenshot" /></td>
+    <td><img src="frontend/assets/screenshot_home.png" width="400" alt="Homepage Screenshot" /></td>
+    <td><img src="frontend/assets/screenshot_shop.png" width="400" alt="Shop Grid Screenshot" /></td>
   </tr>
   <tr>
     <td align="center"><b>📊 Admin Dashboard</b></td>
     <td align="center"><b>🖨️ Air Waybill (AWB) Label</b></td>
   </tr>
   <tr>
-    <td><img src="https://drive.google.com/uc?export=view&id=1kIXIurIPO3e8zWEMvt4MCwD76bnBMWcq" width="400" alt="Admin Dashboard Screenshot" /></td>
-    <td><img src="https://drive.google.com/uc?export=view&id=1YV5WIobvyLWU4WU6CEGF51NDHpDNGkSf" width="400" alt="AWB Invoice Screenshot" /></td>
+    <td><img src="frontend/assets/screenshot_admin.png" width="400" alt="Admin Dashboard Screenshot" /></td>
+    <td><img src="frontend/assets/screenshot_awb.png" width="400" alt="AWB Invoice Screenshot" /></td>
   </tr>
 </table>
 
