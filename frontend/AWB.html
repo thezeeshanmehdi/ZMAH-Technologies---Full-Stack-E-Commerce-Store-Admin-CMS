@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label (Download PDF)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* --- Modern CSS Variables --- */
+        :root {
+            --primary: #2563eb;
+            /* Modern Blue */
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Changed Font */
+            background-color: #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* --- Main Label Container --- */
+        .shipping-label {
+            width: 400px;
+            /* Slightly wider for better spacing */
+            min-height: 600px;
+            background-color: var(--white);
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            /* Shadow for screen view */
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            border-radius: 8px;
+            /* Rounded corners for screen */
+            overflow: hidden;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            display: flex;
+            background: var(--white);
+            padding: 20px;
+            border-bottom: 2px dashed var(--border);
+            /* Dashed line for receipt look */
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo-area {
+            flex: 1;
+        }
+
+        .logo-img {
+            max-height: 50px;
+            max-width: 150px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .company-details {
+            font-size: 10px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        .company-details div {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .company-details i {
+            color: var(--primary);
+            width: 12px;
+        }
+
+        /* Truck Icon styled differently */
+        .delivery-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--light-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 32px;
+        }
+
+        /* --- Order ID Bar --- */
+        .order-bar {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            /* Force color in print */
+        }
+
+        .order-label {
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .order-value {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* --- Content Grid --- */
+        .content-grid {
+            padding: 25px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            /* Space between columns */
+            flex-grow: 1;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        .label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--gray);
+            font-weight: 600;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .value.highlight {
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        /* Address Specific */
+        .address-box {
+            background: var(--light-bg);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        /* --- Total Section --- */
+        .total-section {
+            margin-top: auto;
+            /* Push to bottom of grid cell */
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .total-amount {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background: var(--light-bg);
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-info {
+            font-size: 11px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .cod-badge {
+            background: var(--dark);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* --- PDF Button --- */
+        .btn-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .pdf-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pdf-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Print Specifics to remove shadows/radius */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .shipping-label {
+                box-shadow: none;
+                border: 2px solid #000;
+                border-radius: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .btn-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <div class="shipping-label" id="element-to-print">
+
+        <div class="header">
+            <div class="header-logo-area">
+                <img src="./assets/Sample Logo.png" alt="ZMAH Technologies Logo" class="logo-img">
+                <div class="company-details">
+                    <div><i class="fas fa-map-marker-alt"></i> Karachi, Sindh, Pakistan</div>
+                    <div><i class="fas fa-phone-alt"></i> +92 300 2055443</div>
+                    <div><i class="fas fa-globe"></i> zeetechnologies.pk@gmail.com</div>
+                </div>
+            </div>
+            <div class="delivery-icon">
+                <i class="fas fa-shipping-fast"></i>
+            </div>
+        </div>
+
+        <div class="order-bar">
+            <span class="order-label">Order ID</span>
+            <span class="order-value" id="awb-order-id">LOADING</span>
+        </div>
+
+        <div class="content-grid">
+            <div class="left-col">
+                <div class="info-group">
+                    <span class="label">Receipt Name</span>
+                    <span class="value highlight" id="awb-name">...</span>
+                </div>
+                <div class="info-group">
+                    <span class="label">Contact Number</span>
+                    <span class="value" id="awb-contact">...</span>
+                </div>
+                <div class="info-group">
+                    <span class="label">Email Address</span>
+                    <span class="value" id="awb-email" style="font-size:12px; word-break: break-all;">...</span>
+                </div>
+                <div class="info-group">
+                    <span class="label">City</span>
+                    <span class="value" id="awb-city">...</span>
+                </div>
+            </div>
+
+            <div class="right-col" style="display:flex; flex-direction:column; height:100%;">
+                <div class="info-group">
+                    <span class="label">Shipping Address</span>
+                    <div class="value address-box" id="awb-address">...</div>
+                </div>
+
+                <div class="total-section">
+                    <span class="label">Total Amount (COD)</span>
+                    <span class="total-amount" id="awb-amount">Rs. 0/-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-info">
+                <div id="awb-weight">Weight: 0.5 KG</div>
+                <div style="margin-top:4px;">Date: <span id="awb-date"></span></div>
+            </div>
+            <div class="cod-badge">COD</div>
+        </div>
+
+    </div>
+
+    <div class="btn-container">
+        <button class="pdf-btn" onclick="generatePDF()">
+            <i class="fas fa-file-pdf"></i> Download Label
+        </button>
+    </div>
+
+    <script>
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.has('orderId')) {
+                let oid = params.get('orderId');
+                if (!oid.startsWith('#')) oid = '#' + oid;
+
+                document.getElementById('awb-order-id').innerText = oid;
+                document.getElementById('awb-name').innerText = params.get('name');
+                document.getElementById('awb-contact').innerText = params.get('contact');
+                document.getElementById('awb-email').innerText = params.get('email');
+                document.getElementById('awb-city').innerText = params.get('city');
+                document.getElementById('awb-address').innerText = params.get('address');
+                document.getElementById('awb-amount').innerText = 'Rs. ' + params.get('amount') + '/-';
+                document.getElementById('awb-weight').innerText = 'Weight: ' + (params.get('weight') || '0.5 KG');
+                document.getElementById('awb-date').innerText = params.get('date');
+            } else {
+                const today = new Date();
+                document.getElementById('awb-date').innerText = today.toLocaleDateString('en-GB');
+            }
+        };
+
+        function generatePDF() {
+            const element = document.getElementById('element-to-print');
+            const orderIdText = document.getElementById('awb-order-id').innerText.replace('#', '') || 'Label';
+
+            const opt = {
+                margin: 0,
+                filename: `ZMAH_AWB_${orderIdText}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF: { unit: 'in', format: [4.17, 6.25], orientation: 'portrait' }
+            };
+
+            element.classList.add('printing-mode');
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.classList.remove('printing-mode');
+            });
+        }
+    </script>
+
+</body>
+
+</html>

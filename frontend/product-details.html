@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Product Details</title>
+    <link rel="icon" type="image/png" href="/assets/Sample Logo.png">
+    <link rel="shortcut icon" href="/assets/Sample Logo.png">
+    <link rel="apple-touch-icon" href="/assets/Sample Logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel='stylesheet'
+        href='https://xstore.8theme.com/elementor/demos/minimal-electronics/wp-content/themes/xstore/xstore.min.css' />
+
+    <style>
+        :root {
+            --theme-blue: #2A74ED;
+            --theme-dark: #2c3e50;
+            --bg-color: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+
+        .header-wrapper {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo img {
+            width: 70px;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icon-btn {
+            color: #333;
+            font-size: 22px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .cart-count-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: var(--theme-blue);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+            display: none;
+        }
+
+        .menu-toggle,
+        .menu-close,
+        .mobile-menu-logo {
+            display: none;
+        }
+
+        .product-detail-wrapper {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .detail-image-box {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+
+        .detail-image-box img {
+            max-width: 100%;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+        }
+
+        .detail-info-box h1 {
+            font-size: 28px;
+            color: var(--theme-dark);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .detail-price {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--theme-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .old-price {
+            font-size: 18px;
+            color: #999;
+            text-decoration: line-through;
+            font-weight: 400;
+        }
+
+        .discount-tag {
+            background: #ff4757;
+            color: white;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .stock-status {
+            font-size: 14px;
+            color: #27ae60;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stock-status.out {
+            color: #c0392b;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.7;
+            font-size: 15px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .action-area {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 48px;
+        }
+
+        .qty-btn {
+            background: #f9f9f9;
+            border: none;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.2s;
+            height: 100%;
+        }
+
+        .qty-btn:hover {
+            background: #eee;
+        }
+
+        #qtyInput {
+            width: 50px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            font-weight: 600;
+            font-size: 16px;
+            height: 100%;
+            outline: none;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            background: #fff;
+            color: var(--theme-blue);
+            border: 1px solid var(--theme-blue);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 48px;
+        }
+
+        .btn-add-cart:hover {
+            background: #f0f7ff;
+        }
+
+        .btn-buy-now {
+            flex: 1;
+            background: var(--theme-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 48px;
+        }
+
+        .btn-buy-now:hover {
+            background: #1b5fb0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 116, 237, 0.3);
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .custom-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 32px;
+        }
+
+        .success-icon {
+            background: #e3fcf2;
+            color: #2ecc71;
+        }
+
+        .error-icon {
+            background: #fce3e3;
+            color: #e74c3c;
+        }
+
+        .custom-modal-box h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .custom-modal-box p {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .btn-confirm {
+            background: var(--theme-blue);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #1b5fb0;
+        }
+
+        @media (max-width: 768px) {
+            .header-wrapper {
+                padding: 15px 20px;
+            }
+
+            .nav-container {
+                display: grid;
+                grid-template-columns: 50px 1fr auto;
+                align-items: center;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+                grid-column: 1;
+            }
+
+            .logo {
+                grid-column: 2;
+                justify-self: center;
+                margin: 0;
+            }
+
+            .logo img {
+                width: 50px;
+            }
+
+            .header-actions {
+                grid-column: 3;
+                justify-self: end;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -320px;
+                width: 300px;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                padding-top: 20px;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+                z-index: 2000;
+                transition: left 0.3s ease;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 0 20px;
+                text-align: left;
+            }
+
+            .nav-menu ul li {
+                border-bottom: 1px solid #f5f5f5;
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            .mobile-menu-logo {
+                display: block;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #f5f5f5;
+                padding-bottom: 10px;
+            }
+
+            .mobile-menu-logo img {
+                width: 120px;
+            }
+
+            .menu-close {
+                display: flex;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                background: #f0f0f0;
+                border-radius: 50%;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .product-detail-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .detail-image-box {
+                padding: 10px;
+            }
+
+            .detail-info-box h1 {
+                font-size: 22px;
+            }
+
+            .action-area {
+                position: fixed;
+                bottom: 60px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 10px 15px;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+                gap: 10px;
+            }
+
+            .qty-wrapper {
+                display: flex !important;
+                height: 45px;
+                flex: 0 0 100px;
+                margin-right: 5px;
+            }
+
+            .qty-btn {
+                padding: 0 7px;
+            }
+
+            .btn-add-cart,
+            .btn-buy-now {
+                font-size: 12px;
+                padding: 0 5px;
+                height: 45px;
+                flex: 1;
+                white-space: nowrap;
+                gap: 4px;
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: #2A74ED;
+                justify-content: space-around;
+                align-items: center;
+                padding: 12px 0;
+                z-index: 9999;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-nav-item {
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 10px;
+                font-weight: 500;
+            }
+
+            .mobile-nav-item.active {
+                color: white;
+            }
+
+            .mobile-nav-item i {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
+        }
+
+        /* Gallery Styles */
+        .detail-gallery-container {
+            width: 100%;
+        }
+
+        .main-image-box {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            height: 400px;
+            margin-bottom: 15px;
+        }
+
+        .main-image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .thumbnail-row {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .thumb-img {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            object-fit: contain;
+            cursor: pointer;
+            padding: 5px;
+            background: #fff;
+        }
+
+        .thumb-img:hover,
+        .thumb-img.active {
+            border-color: var(--theme-blue);
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            width: 20%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <header class="header-wrapper">
+        <div class="nav-container">
+            <div class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+            <div class="logo"><a href="index.html"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></a></div>
+            <nav class="nav-menu" id="navMenu">
+                <div class="menu-close" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+                <div class="mobile-menu-logo"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                    <li><a href="contactus.html">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="cart.html" class="header-icon-btn"><i class="fas fa-shopping-bag"></i><span
+                        class="cart-count-badge" id="headerCartCount">0</span></a>
+                <a href="myaccount.html" class="header-icon-btn" id="headerProfileLink"><i
+                        class="fas fa-user-circle"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="product-detail-wrapper" id="productContainer">
+        <p style="width:100%; text-align:center;">Loading product details...</p>
+    </div>
+
+    <div class="mobile-bottom-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+
+        <a href="shop.html" class="mobile-nav-item active">
+            <i class="fas fa-store"></i>
+            <span>Shop</span>
+        </a>
+
+        <a href="cart.html" class="mobile-nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+
+        <a href="user-profile.html" class="mobile-nav-item" id="bottomNavAccount">
+            <i class="fas fa-user"></i>
+            <span>Account</span>
+        </a>
+
+        <a href="javascript:void(0);" class="mobile-nav-item" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+
+    <div id="customModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div id="modalIcon" class="modal-icon success-icon"><i class="fas fa-check"></i></div>
+            <h3 id="modalTitle">Title</h3>
+            <p id="modalMessage">Message goes here.</p>
+            <button class="modal-btn btn-confirm" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+    <script>
+        const API_URL = '/api';
+        let currentProduct = null;
+
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('customModal');
+            const icon = document.getElementById('modalIcon');
+
+            icon.className = 'modal-icon';
+            if (type === 'success') {
+                icon.classList.add('success-icon');
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                icon.classList.add('error-icon');
+                icon.innerHTML = '<i class="fas fa-times"></i>';
+            }
+
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('customModal')) closeModal();
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            updateCartCount();
+            checkLoginStatus();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (productId) {
+                loadProductDetails(productId);
+            } else {
+                document.getElementById('productContainer').innerHTML = "<p style='text-align:center; padding:20px;'>Product ID missing.</p>";
+            }
+        });
+
+        function checkLoginStatus() {
+            const userToken = localStorage.getItem('user_token');
+            const profileLink = document.getElementById('headerProfileLink');
+            if (userToken) profileLink.href = "user-profile.html";
+            else profileLink.href = "myaccount.html";
+        }
+
+        async function loadProductDetails(id) {
+            try {
+                const res = await fetch(`${API_URL}/product/${id}`);
+
+                if (!res.ok) {
+                    throw new Error(`Server error: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                if (!data || data.message) {
+                    document.getElementById('productContainer').innerHTML = "<p style='text-align:center;'>Product not found in database.</p>";
+                    return;
+                }
+
+                currentProduct = data;
+                renderProduct(currentProduct);
+            } catch (e) {
+                console.error(e);
+                document.getElementById('productContainer').innerHTML = `<p style='text-align:center;'>Error loading product. <br> <small>${e.message}</small></p>`;
+            }
+        }
+
+        function renderProduct(prod) {
+            let images = (prod.images && prod.images.length > 0) ? prod.images : [];
+
+            if (images.length === 0 && prod.image) {
+                images = [prod.image];
+            }
+
+            images = images.map(img => img.replace(/\\/g, '/'));
+
+            let firstImg = images.length > 0 ? images[0] : '';
+            let mainImageSrc = firstImg ? (firstImg.startsWith('http') || firstImg.startsWith('//') ? firstImg : `/${firstImg}`) : 'https://placehold.co/400?text=No+Image';
+
+            let thumbnailsHTML = '';
+            if (images.length > 1) {
+                images.forEach((img, index) => {
+                    let src = img.startsWith('http') || img.startsWith('//') ? img : `/${img}`; 
+                    thumbnailsHTML += `<img src="${src}" class="thumb-img ${index === 0 ? 'active' : ''}" onclick="changeMainImage('${src}', this)">`;
+                });
+            }
+
+            let videoHTML = '';
+            if (prod.video) {
+                let rawVideo = prod.video.replace(/\\/g, '/');
+                let videoSrc = rawVideo.startsWith('http') || rawVideo.startsWith('//') ? rawVideo : `/${rawVideo}`;
+                videoHTML = `
+                <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+                    <h3 style="font-size:18px; color:#333; margin-bottom:15px; font-weight:600;">Product Video</h3>
+                    <video controls style="width:100%; border-radius:12px; max-height:350px; background:#000;">
+                        <source src="${videoSrc}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>`;
+            }
+
+            let priceHTML = '';
+            let finalPrice = prod.price;
+            if (prod.discount > 0) {
+                finalPrice = Math.round(prod.price - (prod.price * prod.discount / 100));
+                priceHTML = `<span class="old-price">PKR ${prod.price}</span> <span>PKR ${finalPrice}</span> <span class="discount-tag">-${prod.discount}% OFF</span>`;
+            } else {
+                priceHTML = `<span>PKR ${prod.price}</span>`;
+            }
+
+            let isOutOfStock = prod.stock <= 0;
+            let stockHTML = !isOutOfStock
+                ? `<span class="stock-status"><i class="fas fa-check-circle"></i> In Stock (${prod.stock} Available)</span>`
+                : `<span class="stock-status out"><i class="fas fa-times-circle"></i> Out of Stock</span>`;
+
+            let btnState = isOutOfStock ? 'disabled style="background:#ccc; cursor:not-allowed; border:none;"' : '';
+
+            const html = `
+            <div class="detail-gallery-container">
+                <div class="detail-image-box">
+                    <img id="mainImage" src="${mainImageSrc}" alt="${prod.title}" onerror="this.src='https://placehold.co/400?text=Image+Error'">
+                </div>
+                <div class="thumbnail-row">
+                    ${thumbnailsHTML}
+                </div>
+            </div>
+
+            <div class="detail-info-box">
+                <h1>${prod.title}</h1>
+                <div class="detail-price">${priceHTML}</div>
+                ${stockHTML}
+                <p class="description">${prod.description || 'No description available.'}</p>
+                
+                <div class="action-area">
+                    <div class="qty-wrapper">
+                        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                        <input type="text" id="qtyInput" value="1" readonly>
+                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+    
+                    <button class="btn-add-cart" onclick="attemptAddToCart(true)" ${btnState}>
+                        <i class="fas fa-shopping-basket"></i> Add to Cart
+                    </button>
+    
+                    <button class="btn-buy-now" onclick="buyNowAction()" ${btnState}>
+                        <i class="fas fa-bolt"></i> Buy Now
+                    </button>
+                </div>
+
+                ${videoHTML}
+            </div>
+        `;
+            document.getElementById('productContainer').innerHTML = html;
+        }
+
+        function changeMainImage(src, thumb) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.thumb-img').forEach(img => img.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+
+        function changeQty(amount) {
+            if (!currentProduct) return;
+
+            const input = document.getElementById('qtyInput');
+            let currentVal = parseInt(input.value);
+            if (isNaN(currentVal)) currentVal = 1;
+
+            let newVal = currentVal + amount;
+
+            if (newVal < 1) return;
+
+            if (newVal > currentProduct.stock) {
+                showModal('error', 'Limit Reached', `Only ${currentProduct.stock} items available in stock.`);
+                return;
+            }
+
+            input.value = newVal;
+        }
+
+        function attemptAddToCart(showPopup) {
+            if (!currentProduct) return false;
+
+            if (currentProduct.stock <= 0) {
+                showModal('error', 'Out of Stock', 'This product is currently unavailable.');
+                return false;
+            }
+
+            const qty = parseInt(document.getElementById('qtyInput').value);
+
+            let finalPrice = currentProduct.price;
+            if (currentProduct.discount > 0) {
+                finalPrice = Math.round(currentProduct.price - (currentProduct.price * currentProduct.discount / 100));
+            }
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let existingItem = cart.find(item => item.id === currentProduct._id);
+
+            let currentCartQty = existingItem ? existingItem.quantity : 0;
+
+            if ((currentCartQty + qty) > currentProduct.stock) {
+                showModal('error', 'Stock Limit Exceeded', `You have ${currentCartQty} in cart. Only ${currentProduct.stock - currentCartQty} more available.`);
+                return false;
+            }
+            let cartImage = '';
+            if (currentProduct.images && currentProduct.images.length > 0) {
+                cartImage = currentProduct.images[0].replace(/\\/g, '/');
+            } else if (currentProduct.image) {
+                cartImage = currentProduct.image.replace(/\\/g, '/');
+            }
+
+            if (existingItem) {
+                existingItem.quantity += qty;
+            } else {
+                cart.push({
+                    id: currentProduct._id,
+                    title: currentProduct.title,
+                    price: finalPrice,
+                    image: cartImage,
+                    quantity: qty
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+
+            if (showPopup) {
+                showModal('success', 'Added to Cart', 'Product added successfully.');
+            }
+            return true;
+        }
+
+        function buyNowAction() {
+            const userToken = localStorage.getItem('user_token');
+
+            if (!userToken) {
+                showModal('error', 'Login Required', 'Please login to proceed with purchase.');
+                return;
+            }
+
+            const success = attemptAddToCart(false);
+
+            if (success) {
+                window.location.href = 'checkout.html';
+            }
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('headerCartCount');
+            if (count > 0) {
+                badge.style.display = 'block';
+                badge.innerText = count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

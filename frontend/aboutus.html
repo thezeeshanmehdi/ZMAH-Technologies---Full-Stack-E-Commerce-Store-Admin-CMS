@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>About Us </title>
+    <link rel="icon" type="image/png" href="/assets/Sample Logo.png">
+    <link rel="shortcut icon" href="/assets/Sample Logo.png">
+    <link rel="apple-touch-icon" href="/assets/Sample Logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel='stylesheet'
+        href='https://xstore.8theme.com/elementor/demos/minimal-electronics/wp-content/themes/xstore/xstore.min.css'
+        type='text/css' media='all' />
+
+    <style>
+        :root {
+            --theme-blue: #2A74ED;
+            --theme-dark: #2c3e50;
+            --bg-color: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding-bottom: 70px;
+        }
+
+        .header-wrapper {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo img {
+            width: 70px;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            color: var(--theme-blue);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .menu-close,
+        .mobile-menu-logo {
+            display: none;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon-btn {
+            color: #333;
+            font-size: 22px;
+            text-decoration: none;
+            position: relative;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon-btn:hover {
+            color: var(--theme-blue);
+            transform: scale(1.1);
+        }
+
+        .cart-count-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: var(--theme-blue);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+            display: none;
+        }
+
+        .about-hero {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .about-hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 40px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .hero-content p {
+            font-size: 16px;
+            color: #333;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .about-section {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .about-section h2 {
+            font-size: 28px;
+            color: var(--theme-dark);
+            margin-bottom: 20px;
+        }
+
+        .about-section p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+            border-color: var(--theme-blue);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            color: var(--theme-blue);
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--theme-dark);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #222;
+            color: #fff;
+            padding: 40px 0 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #2A74ED;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0;
+            z-index: 9999;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 10px;
+            font-weight: 500;
+            position: relative;
+            width: 20%;
+            padding: 5px 0;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .mobile-cart-badge {
+            position: absolute;
+            top: -3px;
+            right: 0px;
+            background: white;
+            color: #2A74ED;
+            font-size: 9px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 70px;
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+            }
+
+            .header-wrapper {
+                padding: 15px 20px;
+            }
+
+            .nav-container {
+                display: grid;
+                grid-template-columns: 50px 1fr 50px;
+                align-items: center;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+                order: 1;
+            }
+
+            .logo {
+                order: 2;
+                margin: 0;
+            }
+
+            .logo img {
+                width: 50px;
+            }
+
+            .header-actions {
+                order: 3;
+                gap: 15px;
+                margin: 0;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -320px;
+                width: 300px;
+                height: 100vh;
+                background: #ffffff !important;
+                flex-direction: column;
+                padding-top: 20px;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+                z-index: 2000;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 0;
+                text-align: left;
+                gap: 0;
+                margin-top: 10px;
+            }
+
+            .nav-menu ul li {
+                width: 100%;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .nav-menu ul li a {
+                display: block;
+                padding: 16px 30px;
+                font-size: 14px;
+                color: #333;
+                font-weight: 500;
+                text-transform: uppercase;
+            }
+
+            .nav-menu ul li a:hover {
+                background-color: #f9f9f9;
+                color: var(--theme-blue);
+            }
+
+            .mobile-menu-logo {
+                display: block;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #f5f5f5;
+            }
+
+            .mobile-menu-logo img {
+                width: 120px;
+                margin: 0 auto;
+            }
+
+            .menu-close {
+                display: flex;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                background: #f0f0f0;
+                border-radius: 50%;
+                font-size: 16px;
+                color: #555;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+            }
+
+
+            .menu-overlay.active {
+                display: block;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            width: 20%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <div class="menu-overlay" onclick="toggleMenu()"></div>
+
+    <header class="header-wrapper">
+        <div class="nav-container">
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="logo"><a href="index.html"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></a></div>
+
+            <nav class="nav-menu" id="navMenu">
+                <div class="menu-close" onclick="toggleMenu()">
+                    <i class="fas fa-times"></i>
+                </div>
+                <div class="mobile-menu-logo">
+                    <img src="./assets/Sample Logo.png" alt="ZMAH Technologies">
+                </div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="aboutus.html" style="color:var(--theme-blue);">About Us</a></li>
+                    <li><a href="contactus.html">Contact Us</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="cart.html" class="header-icon-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count-badge" id="headerCartCount">0</span>
+                </a>
+                <a href="myaccount.html" id="headerProfileLink" class="header-icon-btn">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="about-hero">
+        <div class="hero-content">
+            <h1>About ZMAH Technologies</h1>
+            <p>Innovating Your Lifestyle with Premium Products</p>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2>Who We Are</h2>
+        <p>
+            ZMAH Technologies is a leading provider of high-quality electronics and gadgets.
+            Established with a vision to make technology accessible and affordable, we strive to deliver the best
+            products to your doorstep.
+            Our commitment to quality and customer satisfaction sets us apart in the market.
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
+                <h3>Fast Delivery</h3>
+                <p>We ensure your products reach you safely and on time.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-award"></i></div>
+                <h3>Quality Assurance</h3>
+                <p>100% genuine products with official warranties.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                <h3>24/7 Support</h3>
+                <p>Our dedicated team is here to assist you anytime.</p>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    
+    <a href="shop.html" class="nav-item">
+        <i class="fas fa-store"></i>
+        <span>Shop</span>
+    </a>
+    
+    <a href="cart.html" class="nav-item">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Cart</span>
+    </a>
+    
+    <a href="user-profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Account</span>
+    </a>
+
+    <a href="javascript:void(0);" class="nav-item" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+        <span>Menu</span>
+    </a>
+</div>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            const overlay = document.querySelector('.menu-overlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            updateCartCount();
+            checkLoginStatus();
+        });
+
+        function checkLoginStatus() {
+            const userToken = localStorage.getItem('user_token');
+            const profileLink = document.getElementById('headerProfileLink');
+            if (userToken) { profileLink.href = "user-profile.html"; }
+            else { profileLink.href = "myaccount.html"; }
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            const badge = document.getElementById('headerCartCount');
+            const mobileBadge = document.getElementById('mobileBottomCartCount');
+
+            if (count > 0) {
+                badge.style.display = 'block'; badge.innerText = count;
+                if (mobileBadge) { mobileBadge.style.display = 'flex'; mobileBadge.innerText = count; }
+            } else {
+                badge.style.display = 'none';
+                if (mobileBadge) mobileBadge.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

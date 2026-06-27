@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>My Profile</title>
+    <link rel="icon" type="image/png" href="/assets/Sample Logo.png">
+    <link rel="shortcut icon" href="/assets/Sample Logo.png">
+    <link rel="apple-touch-icon" href="/assets/Sample Logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --theme-blue: #2A74ED;
+            --theme-dark: #2c3e50;
+            --theme-gray: #f4f7f6;
+            --text-light: #7e8299;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--theme-gray);
+            margin: 0;
+            padding-bottom: 40px;
+        }
+
+        .header-wrapper {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo img {
+            width: 70px;
+            height: auto;
+            display: block;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--theme-blue);
+        }
+
+        .menu-close,
+        .mobile-menu-logo {
+            display: none;
+        }
+
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: var(--theme-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #1a5bbd;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .sidebar-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .user-mini-profile {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(to bottom, #fff, #fbfbfb);
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background: #e1ecff;
+            color: var(--theme-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 600;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 5px 15px rgba(42, 116, 237, 0.2);
+        }
+
+        .user-mini-profile h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--theme-dark);
+        }
+
+        .user-mini-profile p {
+            margin: 5px 0 0;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 25px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: #f8faff;
+            color: var(--theme-blue);
+            border-left-color: var(--theme-blue);
+        }
+
+        .menu-logout {
+            color: #e74c3c !important;
+        }
+
+        .menu-logout:hover {
+            background: #fff5f5 !important;
+            border-left-color: #e74c3c !important;
+        }
+
+        .content-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 700px;
+        }
+
+        .order-table th {
+            background: #f8fafc;
+            padding: 18px 24px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .order-table td {
+            padding: 20px 24px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .order-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-table tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .order-id-text {
+            color: var(--theme-blue);
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            background: #eff6ff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .item-list-text {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #475569;
+        }
+
+        .price-text {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-pending {
+            background: #fffbeb;
+            color: #b45309;
+        }
+
+        .status-shipped {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .status-delivered {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        .status-cancelled {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .btn-cancel {
+            background: white;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #ef4444;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .expired-text {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .custom-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 32px;
+        }
+
+        .success-icon {
+            background: #e3fcf2;
+            color: #2ecc71;
+        }
+
+        .error-icon {
+            background: #fce3e3;
+            color: #e74c3c;
+        }
+
+        .warning-icon {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .custom-modal-box h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .custom-modal-box p {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .btn-confirm {
+            background: var(--theme-blue);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #1b5fb0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cancel-modal {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-cancel-modal:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 70px;
+            }
+
+            .nav-container {
+                display: grid;
+                grid-template-columns: 50px 1fr 50px;
+                align-items: center;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+                grid-column: 1;
+                justify-self: start;
+                font-size: 22px;
+                cursor: pointer;
+            }
+
+            .logo {
+                grid-column: 2;
+                justify-self: center;
+                margin: 0;
+            }
+
+            .logo img {
+                width: 50px;
+            }
+
+            .header-actions {
+                grid-column: 3;
+                justify-self: end;
+                margin: 0;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -320px;
+                width: 300px;
+                height: 100vh;
+                background: #ffffff !important;
+                flex-direction: column;
+                padding-top: 20px;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+                z-index: 2000;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 0;
+                text-align: left;
+                gap: 0;
+                margin-top: 10px;
+            }
+
+            .nav-menu ul li {
+                width: 100%;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .nav-menu ul li a {
+                display: block;
+                padding: 16px 30px;
+                font-size: 14px;
+                color: #333;
+                font-weight: 500;
+                text-transform: uppercase;
+            }
+
+            .nav-menu ul li a:hover {
+                background-color: #f9f9f9;
+                color: var(--theme-blue);
+            }
+
+            .mobile-menu-logo {
+                display: block;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #f5f5f5;
+            }
+
+            .mobile-menu-logo img {
+                width: 120px;
+                margin: 0 auto;
+            }
+
+            .menu-close {
+                display: flex;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                background: #f0f0f0;
+                border-radius: 50%;
+                font-size: 16px;
+                color: #555;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            .menu-close:hover {
+                background: #e0e0e0;
+                color: #000;
+            }
+
+            .menu-overlay.active {
+                display: block;
+            }
+
+            .dashboard-container {
+                margin: 20px auto;
+                padding: 0 15px;
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 10px;
+                border-top: 1px solid #eee;
+                white-space: nowrap;
+            }
+
+            .sidebar-menu li a {
+                padding: 8px 15px;
+                border-left: none;
+                border-radius: 20px;
+                background: #fff;
+                border: 1px solid #eee;
+                margin-right: 8px;
+                font-size: 13px;
+            }
+
+            .sidebar-menu li a.active {
+                background: var(--theme-blue);
+                color: white;
+            }
+
+            .sidebar-menu::-webkit-scrollbar {
+                display: none;
+            }
+
+            .content-card {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .order-table,
+            .order-table tbody,
+            .order-table tr,
+            .order-table td {
+                display: block;
+                width: 100%;
+                min-width: 0;
+            }
+
+            .order-table thead {
+                display: none;
+            }
+
+            .order-table tr {
+                margin-bottom: 15px;
+                background: #fff;
+                border: 1px solid #eee;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+                padding: 15px;
+                position: relative;
+            }
+
+            .order-table td {
+                padding: 8px 0;
+                border-bottom: 1px solid #f9f9f9;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                font-size: 13px;
+            }
+
+            .order-table td:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+            .order-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #888;
+                font-size: 12px;
+                text-transform: uppercase;
+                float: left;
+            }
+
+            .item-list-text {
+                white-space: normal;
+                max-width: 180px;
+                text-align: right;
+                line-height: 1.4;
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: #2A74ED;
+                justify-content: space-around;
+                align-items: center;
+                padding: 12px 0;
+                z-index: 9999;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-nav-item {
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 10px;
+                font-weight: 500;
+            }
+
+            .mobile-nav-item.active,
+            .mobile-nav-item:hover {
+                color: #fff;
+            }
+
+            .mobile-nav-item i {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            width: 20%;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .edit-btn {
+            font-size: 13px;
+            color: var(--theme-blue);
+            background: #eff6ff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .edit-btn:hover {
+            background: var(--theme-blue);
+            color: white;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .info-item input:focus {
+            border-color: var(--theme-blue);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(42, 116, 237, 0.1);
+        }
+
+        .info-item input:disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            border-color: #f1f5f9;
+            cursor: default;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <div class="menu-overlay" onclick="toggleMenu()"></div>
+
+    <header class="header-wrapper">
+        <div class="nav-container">
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <div class="logo">
+                <a href="index.html"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></a>
+            </div>
+
+            <nav class="nav-menu" id="navMenu">
+                <div class="menu-close" onclick="toggleMenu()">
+                    <i class="fas fa-times"></i>
+                </div>
+                <div class="mobile-menu-logo">
+                    <img src="./assets/Sample Logo.png" alt="ZMAH Technologies">
+                </div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                    <li><a href="contactus.html">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="shop.html" class="back-btn">
+                    <i class="fas fa-shopping-bag"></i> <span class="mob-hide">Shop</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar-card">
+            <div class="user-mini-profile">
+                <div class="avatar-circle" id="sideAvatar">U</div>
+                <div>
+                    <h3 id="sideName">Loading...</h3>
+                    <p id="sideEmail">...</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a onclick="switchTab('profile')" class="active" id="tab-profile"><i class="fas fa-user-circle"></i>
+                        My Profile</a></li>
+                <li><a onclick="switchTab('orders')" id="tab-orders"><i class="fas fa-box-open"></i> Orders</a></li>
+                <li><a onclick="logout()" class="menu-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main>
+            <div id="view-profile" class="content-section active">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2>Personal Information</h2>
+                        <span class="edit-btn" onclick="enableEdit()" id="editBtn"><i class="fas fa-pen"></i>
+                            Edit</span>
+                        <button onclick="saveProfile()" id="saveBtn"
+                            style="display:none; background:var(--theme-blue); color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Save
+                            Changes</button>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item"><label>Full Name</label><input type="text" id="uName" disabled></div>
+                        <div class="info-item"><label>Email</label><input type="text" id="uEmail" disabled></div>
+                        <div class="info-item"><label>Phone</label><input type="text" id="uContact" disabled></div>
+                        <div class="info-item"><label>City</label><input type="text" id="uCity" disabled></div>
+                        <div class="info-item" style="grid-column: 1 / -1;"><label>Address</label><input type="text"
+                                id="uAddress" disabled></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-orders" class="content-section">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2>My Orders</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersContainer">
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding:20px;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mobile-bottom-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+
+        <a href="shop.html" class="mobile-nav-item">
+            <i class="fas fa-store"></i>
+            <span>Shop</span>
+        </a>
+
+        <a href="cart.html" class="mobile-nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+        <a href="user-profile.html" class="mobile-nav-item active" id="bottomNavAccount">
+            <i class="fas fa-user"></i>
+            <span>Account</span>
+        </a>
+        <a href="javascript:void(0);" class="mobile-nav-item" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+
+    <div id="customModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div id="modalIcon" class="modal-icon success-icon"><i class="fas fa-check"></i></div>
+            <h3 id="modalTitle">Title</h3>
+            <p id="modalMessage">Message goes here.</p>
+            <button class="modal-btn btn-confirm" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <div id="logoutModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="modal-icon warning-icon"><i class="fas fa-sign-out-alt"></i></div>
+            <h3>Ready to Leave?</h3>
+            <p>Are you sure you want to log out of your account?</p>
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel-modal" onclick="closeLogoutModal()">Cancel</button>
+                <button class="modal-btn btn-danger" onclick="confirmLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancelOrderModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="modal-icon warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>Cancel Order?</h3>
+            <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel-modal" onclick="closeCancelOrderModal()">No, Keep it</button>
+                <button class="modal-btn btn-danger" onclick="confirmCancelOrder()">Yes, Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="cancelOrderModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="modal-icon warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>Cancel Order?</h3>
+            <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel-modal" onclick="closeCancelOrderModal()">No, Keep it</button>
+                <button class="modal-btn btn-danger" onclick="confirmCancelOrder()">Yes, Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        const userToken = localStorage.getItem('user_token');
+        let orderToCancel = null;
+
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            const overlay = document.querySelector('.menu-overlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('customModal');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+
+            icon.className = 'modal-icon';
+            if (type === 'success') {
+                icon.classList.add('success-icon');
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                icon.classList.add('error-icon');
+                icon.innerHTML = '<i class="fas fa-times"></i>';
+            }
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        function logout() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function confirmLogout() {
+            localStorage.clear();
+            window.location.href = 'shop.html';
+        }
+
+        function cancelOrder(orderId) {
+            orderToCancel = orderId;
+            document.getElementById('cancelOrderModal').style.display = 'flex';
+        }
+
+        function closeCancelOrderModal() {
+            document.getElementById('cancelOrderModal').style.display = 'none';
+        }
+
+        async function confirmCancelOrder() {
+            closeCancelOrderModal();
+            if (!orderToCancel) return;
+
+            try {
+                const res = await fetch(`${API_URL}/order/cancel/${orderToCancel}`, {
+                    method: 'POST',
+                    headers: { 'auth-token': userToken }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showModal('success', 'Order Cancelled', 'Your order has been cancelled successfully.');
+                    loadOrders();
+                } else {
+                    showModal('error', 'Error', data.message);
+                }
+            } catch (err) { showModal('error', 'Server Error', 'Could not connect to server.'); }
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('customModal');
+            const logoutModal = document.getElementById('logoutModal');
+            const cancelOrderModal = document.getElementById('cancelOrderModal');
+            if (event.target == modal) closeModal();
+            if (event.target == logoutModal) closeLogoutModal();
+            if (event.target == cancelOrderModal) closeCancelOrderModal();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const userData = JSON.parse(localStorage.getItem('user_details'));
+            if (!userToken || !userData) { window.location.href = 'myaccount.html'; return; }
+
+            document.getElementById('uName').value = userData.fullName || userData.name;
+            document.getElementById('uEmail').value = userData.email;
+            document.getElementById('uContact').value = userData.contact;
+            document.getElementById('uCity').value = userData.city;
+            document.getElementById('uAddress').value = userData.address;
+
+            document.getElementById('sideName').innerText = userData.fullName || userData.name;
+            document.getElementById('sideEmail').innerText = userData.email;
+
+            let initial = (userData.fullName || userData.name || "U").charAt(0).toUpperCase();
+            document.getElementById('sideAvatar').innerText = initial;
+
+            loadOrders();
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + tab).classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${API_URL}/user/orders`, { headers: { 'auth-token': userToken } });
+                const data = await response.json();
+                const container = document.getElementById('ordersContainer');
+                container.innerHTML = '';
+
+                if (data.orders.length === 0) {
+                    container.innerHTML = '<tr><td colspan="5" align="center" style="padding:40px; color:#999;">No orders found.</td></tr>';
+                    return;
+                }
+
+                data.orders.forEach(order => {
+                    
+                    let items = order.cart_items.map(i => i.title).join(', ');
+
+                    let statusClass = 'status-badge';
+                    if (order.status === 'Cancelled') statusClass += ' status-cancelled';
+                    else if (order.status === 'Shipped') statusClass += ' status-shipped';
+                    else if (order.status === 'Delivered') statusClass += ' status-delivered';
+                    else statusClass += ' status-pending';
+
+                    let actionHtml = '';
+                    if (order.status === 'Pending' || order.status === 'Seller to Pack') {
+                        actionHtml = `<button class="btn-cancel" onclick="cancelOrder('${order.order_id}')">
+                                <i class="fas fa-times"></i> Cancel
+                              </button>`;
+                    } else if (order.status === 'Cancelled') {
+                        if (order.cancelledBy === 'admin') {
+                            actionHtml = `<span class="expired-text" style="color:#ef4444;">
+                                    <i class="fas fa-info-circle"></i> Admin Cancelled
+                                  </span>`;
+                        } else {
+                            actionHtml = '<span class="expired-text">Cancelled by You</span>';
+                        }
+                    } else if (order.status === 'Shipped') {
+                        actionHtml = '<span class="expired-text" style="color:#0369a1;"><i class="fas fa-truck"></i> On the way</span>';
+                    } else if (order.status === 'Delivered') {
+                        actionHtml = '<span class="expired-text" style="color:#15803d;"><i class="fas fa-check-circle"></i> Completed</span>';
+                    } else {
+                        actionHtml = '<span class="expired-text">Cannot Cancel</span>';
+                    }
+
+                    container.innerHTML += `
+            <tr>
+                <td data-label="Order #">
+                    <span class="order-id-text">#${order.order_id}</span>
+                </td>
+                <td data-label="Items">
+                    <div class="item-list-text" title="${items}">${items}</div>
+                </td>
+                <td data-label="Total">
+                    <span class="price-text">PKR ${order.total_bill.toLocaleString()}</span>
+                </td>
+                <td data-label="Status">
+                    <span class="${statusClass}">${order.status}</span>
+                </td>
+                <td data-label="Action">
+                    ${actionHtml}
+                </td>
+            </tr>`;
+                });
+            } catch (e) { console.log(e); }
+        }
+
+        function enableEdit() {
+            document.querySelectorAll('.info-grid input').forEach(i => { if (i.id !== 'uEmail') i.disabled = false; });
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'block';
+        }
+        async function saveProfile() {
+            const updated = {
+                fullName: document.getElementById('uName').value,
+                contact: document.getElementById('uContact').value,
+                city: document.getElementById('uCity').value,
+                address: document.getElementById('uAddress').value
+            };
+            try {
+                const res = await fetch(`${API_URL}/user/update`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json', 'auth-token': userToken }, body: JSON.stringify(updated)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    let curr = JSON.parse(localStorage.getItem('user_details')) || {};
+
+                    let newData = { ...curr, ...updated };
+
+                    if (updated.fullName) newData.name = updated.fullName;
+
+                    localStorage.setItem('user_details', JSON.stringify(newData));
+
+                    showModal('success', 'Profile Updated!', 'Your profile information has been saved successfully.');
+
+                    setTimeout(() => { location.reload(); }, 1500);
+                } else {
+                    showModal('error', 'Update Failed', 'Could not update profile.');
+                }
+            } catch (err) {
+                showModal('error', 'Server Error', 'Could not connect to server.');
+            }
+        }
+    </script>
+</body>
+
+</html>

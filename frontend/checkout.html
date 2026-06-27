@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Checkout</title>
+    <link rel="icon" type="image/png" href="/assets/Sample Logo.png">
+    <link rel="shortcut icon" href="/assets/Sample Logo.png">
+    <link rel="apple-touch-icon" href="/assets/Sample Logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel='stylesheet'
+        href='https://xstore.8theme.com/elementor/demos/minimal-electronics/wp-content/themes/xstore/xstore.min.css'
+        type='text/css' media='all' />
+
+    <style>
+        :root {
+            --theme-blue: #2A74ED;
+            --theme-dark: #2c3e50;
+            --theme-gray: #f4f7f6;
+            --text-light: #7e8299;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--theme-gray);
+            margin: 0;
+            padding-bottom: 40px;
+        }
+
+        .header-wrapper {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo img {
+            width: 70px;
+            height: auto;
+            display: block;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--theme-blue);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon-btn {
+            color: #333;
+            font-size: 22px;
+            text-decoration: none;
+            position: relative;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5f5f5;
+        }
+
+        .header-icon-btn:hover {
+            background: var(--theme-blue);
+            color: white;
+        }
+
+        .menu-toggle,
+        .menu-close,
+        .mobile-menu-logo {
+            display: none;
+        }
+
+        .page-header {
+            background: #fff;
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 10px;
+            font-size: 28px;
+            color: var(--theme-dark);
+        }
+
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+        }
+
+        .checkout-form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--theme-dark);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fcfcfc;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--theme-blue);
+            background: #fff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .order-summary-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--theme-dark);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .checkout-items-list {
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .checkout-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 15px;
+        }
+
+        .item-info {
+            flex-grow: 1;
+        }
+
+        .item-info h4 {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .item-info p {
+            margin: 4px 0 0;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .item-total {
+            font-weight: 600;
+            color: var(--theme-dark);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .summary-row.total {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--theme-dark);
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background: var(--theme-blue);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px -10px rgba(42, 116, 237, 0.5);
+            margin-top: 25px;
+        }
+
+        .place-order-btn:hover {
+            background: #1b5fb0;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px rgba(42, 116, 237, 0.6);
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .custom-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 28px;
+        }
+
+        .success-icon {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .warning-icon {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .custom-modal-box h3 {
+            margin: 0 0 10px 0;
+            color: var(--theme-dark);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .custom-modal-box p {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: var(--theme-blue);
+            color: white;
+            transition: 0.2s;
+        }
+
+        .modal-btn:hover {
+            background: #1b5fb0;
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .order-summary-box {
+                position: static;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 70px;
+            }
+
+            .nav-container {
+                display: grid;
+                grid-template-columns: 50px 1fr 50px;
+                align-items: center;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+                grid-column: 1;
+                font-size: 22px;
+                cursor: pointer;
+            }
+
+            .logo {
+                grid-column: 2;
+                justify-self: center;
+            }
+
+            .logo img {
+                width: 50px;
+            }
+
+            .header-actions {
+                grid-column: 3;
+                justify-self: end;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -320px;
+                width: 300px;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                padding-top: 20px;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+                z-index: 2000;
+                transition: left 0.3s ease;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 0;
+                margin-top: 10px;
+            }
+
+            .nav-menu ul li {
+                width: 100%;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .nav-menu ul li a {
+                display: block;
+                padding: 16px 30px;
+            }
+
+            .menu-close,
+            .mobile-menu-logo {
+                display: flex;
+            }
+
+            .menu-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                background: #f0f0f0;
+                border-radius: 50%;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .mobile-menu-logo {
+                display: block;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #f5f5f5;
+            }
+
+            .mobile-menu-logo img {
+                width: 120px;
+                margin: 0 auto;
+            }
+
+            .menu-overlay.active {
+                display: block;
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: #2A74ED;
+                justify-content: space-around;
+                align-items: center;
+                padding: 12px 0;
+                z-index: 9999;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-nav-item {
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 10px;
+                font-weight: 500;
+            }
+
+            .mobile-nav-item.active,
+            .mobile-nav-item:hover {
+                color: white;
+            }
+
+            .mobile-nav-item i {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            width: 20%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <div class="menu-overlay" onclick="toggleMenu()"></div>
+
+    <header class="header-wrapper">
+        <div class="nav-container">
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo"><a href="index.html"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></a></div>
+            <nav class="nav-menu" id="navMenu">
+                <div class="menu-close" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+                <div class="mobile-menu-logo"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                    <li><a href="contactus.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="cart.html" class="header-icon-btn"><i class="fas fa-shopping-bag"></i></a>
+                <a href="myaccount.html" class="header-icon-btn" id="headerProfileLink"><i
+                        class="fas fa-user-circle"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1>Checkout</h1>
+        <p>Complete your order details.</p>
+    </div>
+
+    <div class="checkout-container">
+        <div class="checkout-form">
+            <h3 class="form-title">Shipping Information</h3>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>Full Name <span style="color:red">*</span></label>
+                    <input type="text" id="cName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Number <span style="color:red">*</span></label>
+                        <input type="text" id="cContact" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City <span style="color:red">*</span></label>
+                        <input type="text" id="cCity" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Complete Address <span style="color:red">*</span></label>
+                    <input type="text" id="cAddress" required>
+                </div>
+            </form>
+        </div>
+
+        <div class="order-summary-box">
+            <h3 class="summary-title">Your Order</h3>
+            <div class="checkout-items-list" id="checkoutItems">
+            </div>
+
+            <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">PKR 0</span></div>
+            <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+            <div class="summary-row total"><span>Total</span><span id="summaryTotal">PKR 0</span></div>
+
+            <div style="margin-top: 20px; font-size: 14px; color: #555;">
+                <i class="fas fa-money-bill-wave" style="color: var(--theme-blue); margin-right: 8px;"></i> Cash on
+                Delivery (COD)
+            </div>
+
+            <button class="place-order-btn" onclick="placeOrder()">Place Order <i
+                    class="fas fa-check-circle"></i></button>
+        </div>
+
+    </div>
+
+    <div class="mobile-bottom-nav">
+        <a href="index.html" class="mobile-nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+
+        <a href="shop.html" class="mobile-nav-item">
+            <i class="fas fa-store"></i>
+            <span>Shop</span>
+        </a>
+
+        <a href="cart.html" class="mobile-nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+
+        <a href="user-profile.html" class="mobile-nav-item" id="bottomNavAccount">
+            <i class="fas fa-user"></i>
+            <span>Account</span>
+        </a>
+
+        <a href="javascript:void(0);" class="mobile-nav-item" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+
+    <div id="customModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div id="modalIcon" class="modal-icon success-icon"><i class="fas fa-check"></i></div>
+            <h3 id="modalTitle">Title</h3>
+            <p id="modalMessage">Message goes here.</p>
+            <button class="modal-btn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let cart = [];
+        let finalCartWithShipping = [];
+
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+            document.querySelector('.menu-overlay').classList.toggle('active');
+        }
+
+        function checkLoginStatus() {
+            const userToken = localStorage.getItem('user_token');
+            const profileLink = document.getElementById('headerProfileLink');
+            const bottomProfile = document.getElementById('bottomNavAccount');
+            if (userToken) { profileLink.href = "user-profile.html"; bottomProfile.href = "user-profile.html"; }
+            else { profileLink.href = "myaccount.html"; bottomProfile.href = "myaccount.html"; }
+        }
+        checkLoginStatus();
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('customModal');
+            const icon = document.getElementById('modalIcon');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            icon.className = 'modal-icon ' + (type === 'success' ? 'success-icon' : 'error-icon');
+            icon.innerHTML = type === 'success' ? '<i class="fas fa-check"></i>' : (type === 'warning' ? '<i class="fas fa-exclamation-triangle"></i>' : '<i class="fas fa-times"></i>');
+            modal.style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('customModal').style.display = 'none'; }
+        window.onclick = function (event) { if (event.target == document.getElementById('customModal')) closeModal(); }
+
+        window.onload = function () {
+            const token = localStorage.getItem('user_token');
+            if (!token) {
+                showModal('error', 'Login Required', 'Please log in to place an order.');
+                setTimeout(() => { window.location.href = 'myaccount.html'; }, 2000);
+                return;
+            }
+            const user = JSON.parse(localStorage.getItem('user_details'));
+            if (user) {
+                document.getElementById('cName').value = user.fullName || user.name || '';
+                document.getElementById('cContact').value = user.contact || '';
+                document.getElementById('cCity').value = user.city || '';
+                document.getElementById('cAddress').value = user.address || '';
+            }
+            loadCheckoutItems();
+        }
+
+        async function loadCheckoutItems() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const container = document.getElementById('checkoutItems');
+
+            if (cart.length === 0) { window.location.href = 'shop.html'; return; }
+
+            let itemsHtml = '';
+            let subtotal = 0;
+            let totalShipping = 0;
+            finalCartWithShipping = [];
+
+            for (let item of cart) {
+                try {
+                    const res = await fetch(`${API_URL}/product/${item.id}`);
+                    const product = await res.json();
+
+                    let currentPrice = product.price;
+                    if (product.discount > 0) {
+                        currentPrice = Math.round(product.price - (product.price * product.discount / 100));
+                    }
+
+                    let shipping = (product.shippingFee || 0);
+
+                    let itemTotal = currentPrice * item.quantity;
+
+                    subtotal += itemTotal;
+                    totalShipping += shipping;
+
+                    finalCartWithShipping.push({
+                        id: item.id,
+                        title: product.title,
+                        quantity: item.quantity,
+                        price: currentPrice,
+                        shippingFee: shipping,
+                        weight: product.weight || 0
+                    });
+
+                    let imageSrc = (product.images && product.images.length > 0) ? product.images[0] : product.image;
+                    let cleanImage = imageSrc ? (imageSrc.startsWith('http') || imageSrc.startsWith('//') ? imageSrc.replace(/\\/g, '/') : `/${imageSrc.replace(/\\/g, '/')}`) : 'https://placehold.co/100';
+
+                    itemsHtml += `
+                        <div class="checkout-item">
+                            <img src="${cleanImage}" alt="${item.title}">
+                            <div class="item-info">
+                                <h4>${item.title}</h4>
+                                <p>Qty: ${item.quantity} x PKR ${currentPrice}</p>
+                                <p style="font-size:11px; color:#888;">Shipping: PKR ${shipping}</p>
+                            </div>
+                            <div class="item-total">PKR ${itemTotal + shipping}</div>
+                        </div>`;
+                } catch (err) {
+                    console.error("Error loading product", err);
+                }
+            }
+
+            container.innerHTML = itemsHtml;
+            document.getElementById('summarySubtotal').innerText = `PKR ${subtotal}`;
+
+            const shippingRow = document.querySelectorAll('.summary-row')[1];
+            if (shippingRow) {
+                shippingRow.children[1].innerText = totalShipping > 0 ? `PKR ${totalShipping}` : 'Free';
+                shippingRow.children[1].style.color = totalShipping > 0 ? '#333' : 'green';
+            }
+
+            document.getElementById('summaryTotal').innerText = `PKR ${subtotal + totalShipping}`;
+        }
+
+        async function placeOrder() {
+            const token = localStorage.getItem('user_token');
+            const customerDetails = {
+                name: document.getElementById('cName').value,
+                contact: document.getElementById('cContact').value,
+                city: document.getElementById('cCity').value,
+                address: document.getElementById('cAddress').value,
+                paymentMethod: 'Cash on Delivery (COD)'
+            };
+
+            if (!customerDetails.name || !customerDetails.contact || !customerDetails.city || !customerDetails.address) {
+                showModal('error', 'Missing Information', 'Please fill in all shipping details.');
+                return;
+            }
+
+            const totalBill = finalCartWithShipping.reduce((sum, item) => {
+
+                return sum + (item.price * item.quantity) + item.shippingFee;
+            }, 0);
+
+            const btn = document.querySelector('.place-order-btn');
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Placing Order...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}/order/place`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'auth-token': token },
+                    body: JSON.stringify({
+                        customer_details: customerDetails,
+                        cart_items: finalCartWithShipping,
+                        total_bill: totalBill
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.removeItem('cart');
+                    showModal('success', 'Order Placed!', 'Thank you for your purchase. Your order has been received.');
+                    setTimeout(() => { window.location.href = 'user-profile.html'; }, 2000);
+                } else {
+                    showModal('error', 'Order Failed', data.message || 'Failed to place order. Please try again.');
+                    btn.innerHTML = 'Place Order <i class="fas fa-check-circle"></i>';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                showModal('error', 'Server Error', 'Could not connect to the server.');
+                btn.innerHTML = 'Place Order <i class="fas fa-check-circle"></i>';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 # 🛒 ZMAH Technologies - Full Stack E-Commerce & Admin CMS
 
 <p align="center">
-  <img src="frontend/assets/Sampal logo.png" alt="ZMAH Technologies Logo" width="220" />
+  <img src="frontend/assets/Logo@2x.png" alt="ZMAH Technologies Logo" width="220" />
 </p>
 
 <p align="center">
@@ -81,11 +81,17 @@ graph TD
   </tr>
   <tr>
     <td align="center"><b>📊 Admin Dashboard</b></td>
-    <td align="center"><b>🖨️ Air Waybill (AWB) Label</b></td>
+    <td align="center"><b>📈 Admin Revenue Analytics</b></td>
   </tr>
   <tr>
     <td><img src="frontend/assets/screenshot_admin.png" width="400" alt="Admin Dashboard Screenshot" /></td>
-    <td><img src="frontend/assets/screenshot_awb.png" width="400" alt="AWB Invoice Screenshot" /></td>
+    <td><img src="frontend/assets/screenshot_revenue.png" width="400" alt="Admin Revenue Screenshot" /></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><b>🖨️ Air Waybill (AWB) Label</b></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><img src="frontend/assets/screenshot_awb.png" width="400" alt="AWB Invoice Screenshot" /></td>
   </tr>
 </table>
 

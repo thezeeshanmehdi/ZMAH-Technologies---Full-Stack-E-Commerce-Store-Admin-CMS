@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Portal</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/assets/Sample Logo.png">
+
+    <style>
+        :root {
+            --primary: #2A74ED;
+            --admin-dark: #0f172a;
+            --admin-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --text-dark: #334155;
+            --bg-gray: #f1f5f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .brand-section {
+            background: var(--admin-gradient);
+            padding: 80px 30px 40px;
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            width: 120px;
+            margin-bottom: 15px;
+            filter: brightness(0) invert(1);
+        }
+
+        .brand-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .brand-text p {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px 30px;
+            background: white;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            margin-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 16px 20px 16px 45px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #f8fafc;
+            color: #333;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .input-wrapper .icon-left {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .input-wrapper input:focus {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(42, 116, 237, 0.1);
+        }
+
+        .input-wrapper input:focus+i {
+            color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--admin-dark);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+        }
+
+        button:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+        }
+
+        .footer-copy {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        @media (min-width: 992px) {
+            body {
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+            }
+
+            .app-wrapper {
+                width: 900px;
+                max-width: 90%;
+                min-height: 550px;
+                height: auto;
+
+                flex-direction: row;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            }
+
+            .brand-section {
+                width: 45%;
+                border-radius: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 50px;
+            }
+
+            .brand-section::after {
+                content: '';
+                position: absolute;
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+                top: -50px;
+                left: -50px;
+                border-radius: 50%;
+            }
+
+            .form-section {
+                width: 55%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 60px 50px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            button {
+                margin-top: 20px;
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .custom-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 28px;
+        }
+
+        .error-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: var(--admin-dark);
+            color: white;
+            margin-top: 15px;
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .custom-modal-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 420px;
+            padding: 40px 30px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+            position: relative;
+            overflow: hidden;
+            animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            left: auto;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 16px;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #2A74ED;
+        }
+
+        .custom-modal-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #2A74ED, #0f172a);
+        }
+
+        .recovery-icon-circle {
+            width: 60px;
+            height: 60px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: #2A74ED;
+            font-size: 24px;
+            transition: 0.3s;
+        }
+
+        .custom-modal-box:hover .recovery-icon-circle {
+            background: #e0f2fe;
+            transform: scale(1.05);
+        }
+
+        .custom-modal-box h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .custom-modal-box p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .success-animation-icon {
+            width: 80px;
+            height: 80px;
+            background: #dcfce7;
+            color: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto;
+            box-shadow: 0 0 0 10px #f0fdf4;
+            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 15px;
+            color: #334155;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .modal-input:focus {
+            background: #ffffff;
+            border-color: #2A74ED;
+            box-shadow: 0 4px 12px rgba(42, 116, 237, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .modal-action-btn {
+            width: 100%;
+            padding: 14px;
+            background: #0f172a;
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
+            margin-top: 5px;
+        }
+
+        .modal-action-btn:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
+        }
+
+        .modal-cancel-btn {
+            margin-top: 15px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-cancel-btn:hover {
+            color: #64748b;
+            text-decoration: underline;
+        }
+
+        .otp-success-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <div class="app-wrapper" id="card">
+
+        <div class="brand-section">
+            <!-- <img src="./assets/Sample Logo.png" alt="ZMAH Technologies" class="brand-logo"> -->
+            <div class="brand-text">
+                <h1>Admin Portal</h1>
+                <p>Secure Management System</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username or Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user-shield icon-left"></i>
+                        <input type="text" id="username" placeholder="Enter Username or Email" required autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock icon-left"></i>
+
+                        <input type="password" id="password" placeholder="••••••••" required style="padding-right: 40px;">
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+                    </div>
+                </div>
+
+                <div style="text-align:right; margin-bottom:20px;">
+                    <a href="#" onclick="openForgotModal()"
+                        style="color:#f42121; font-size:12px; text-decoration:none;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" id="loginBtn">
+                    <span>Login securely</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="footer-copy">
+                &copy; 2026. Authorized Personal's Only.
+            </div>
+        </div>
+    </div>
+
+    <div id="errorModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="modal-icon error-icon"><i class="fas fa-times"></i></div>
+            <h3 id="modalTitle">Access Denied</h3>
+            <p id="modalMessage">Invalid credentials.</p>
+            <button class="modal-btn" onclick="closeModal()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+
+        function showError(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('errorModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('errorModal')) closeModal();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('loginBtn');
+            const originalContent = btn.innerHTML;
+            const card = document.getElementById('card');
+
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifying...';
+            btn.disabled = true;
+            btn.style.opacity = "0.8";
+
+            const usernameOrEmail = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usernameOrEmail, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Redirecting...';
+                    btn.style.background = '#10b981'; 
+                    localStorage.setItem('admin_token', result.token);
+                    setTimeout(() => { window.location.href = 'admin.html'; }, 800);
+                } else {
+                    throw new Error(result.message || "Invalid Credentials");
+                }
+            } catch (err) {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.background = "#ef4444"; 
+                setTimeout(() => { btn.style.background = "var(--admin-dark)"; }, 500);
+
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 500);
+
+                showError("Access Denied", err.message);
+            }
+        });
+    </script>
+    <div id="forgotModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+
+            <div class="recovery-icon-circle">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+
+            <h3>Account Recovery</h3>
+
+            <div id="step1">
+                <p>Enter your Administrator Email to verify your identity.</p>
+
+                <input type="email" id="recoverEmail" class="modal-input" placeholder="Admin Email" autocomplete="off">
+
+                <button onclick="sendAdminOTP()" id="sendOtpBtn" class="modal-action-btn">
+                    Send Verification Code
+                </button>
+            </div>
+
+            <div id="step2" style="display:none; animation: popIn 0.3s ease;">
+                <div class="otp-success-badge">
+                    <i class="fas fa-check-circle"></i> OTP Sent to Email
+                </div>
+
+                <input type="text" id="otpCode" class="modal-input" placeholder="Enter 6-digit OTP"
+                    style="text-align:center; letter-spacing: 2px; font-weight:600;">
+                <input type="password" id="newPass" class="modal-input" placeholder="New Strong Password">
+
+                <button onclick="resetAdminPass()" id="resetBtn" class="modal-action-btn">
+                    Reset Password
+                </button>
+            </div>
+
+            <button onclick="closeForgotModal()" class="modal-cancel-btn">Cancel Recovery</button>
+        </div>
+    </div>
+
+    <script>
+        function openForgotModal() {
+            document.getElementById('forgotModal').style.display = 'flex';
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('recoverEmail').value = '';
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').style.display = 'none';
+        }
+
+        async function sendAdminOTP() {
+            const email = document.getElementById('recoverEmail').value;
+            const btn = document.getElementById('sendOtpBtn');
+
+            if (!email) return alert("Please enter your email.");
+
+            const originalText = btn.innerText;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/admin/forgot-password', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                } else {
+                    alert(data.message || "Failed to send OTP.");
+                }
+            } catch (e) { alert("Server connection failed."); }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        async function resetAdminPass() {
+            const email = document.getElementById('recoverEmail').value;
+            const otp = document.getElementById('otpCode').value;
+            const newPassword = document.getElementById('newPass').value;
+            const btn = document.getElementById('resetBtn');
+
+            if (!otp || !newPassword) return alert("Please fill all fields.");
+
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Updating...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/admin/reset-password', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp, newPassword })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('forgotModal').style.display = 'none'; 
+                    document.getElementById('successModal').style.display = 'flex'; 
+
+                } else {
+                    alert(data.message || "Reset failed.");
+                }
+            } catch (e) { alert("Error resetting password."); }
+
+            btn.innerHTML = 'Reset Password';
+            btn.disabled = false;
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            window.location.reload();
+        }
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+                input.type = "text"; 
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash'); 
+            } else {
+                input.type = "password"; 
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye'); 
+            }
+        }
+    </script>
+
+    <div id="successModal" class="custom-modal-overlay" style="z-index: 2005;">
+        <div class="custom-modal-box" style="text-align: center; padding: 40px;">
+
+            <div class="success-animation-icon">
+                <i class="fas fa-check"></i>
+            </div>
+
+            <h3 style="color: #10b981; font-size: 24px; margin-top: 15px;">Password Reset!</h3>
+            <p style="color: #64748b; margin-bottom: 25px;">Your password has been updated successfully.<br>You can now
+                login.</p>
+
+            <button onclick="closeSuccessModal()" class="modal-action-btn"
+                style="background: #10b981; box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);">
+                Back to Login
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Home</title>
+    <link rel="icon" type="image/png" href="/assets/Sample Logo.png">
+    <link rel="shortcut icon" href="/assets/Sample Logo.png">
+    <link rel="apple-touch-icon" href="/assets/Sample Logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel='stylesheet'
+        href='https://xstore.8theme.com/elementor/demos/minimal-electronics/wp-content/themes/xstore/xstore.min.css' />
+    <link rel='stylesheet'
+        href='https://xstore.8theme.com/elementor/demos/minimal-electronics/wp-content/plugins/elementor/assets/css/frontend.min.css' />
+
+    <style>
+        :root {
+            --theme-blue: #2A74ED;
+            --theme-dark: #2c3e50;
+            --theme-gray: #f4f7f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding-bottom: 0;
+        }
+
+        .custom-header-wrapper {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo img {
+            width: 70px;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            color: var(--theme-blue);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icon-btn {
+            color: #333;
+            font-size: 22px;
+            text-decoration: none;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .cart-count-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: var(--theme-blue);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+            display: none;
+        }
+
+        .menu-toggle,
+        .menu-close,
+        .mobile-menu-logo {
+            display: none;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.02)), url('/assets/Image-4-min.jpeg');
+            background-size: cover;
+            background-position: center right;
+            height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 650px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-subtitle {
+            color: var(--theme-blue);
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .hero-content h1 {
+            font-size: 52px;
+            line-height: 1.2;
+            color: #222;
+            margin: 0 0 20px 0;
+            font-weight: 700;
+        }
+
+        .typing-text {
+            color: #2A74ED;
+            border-right: 2px solid #2A74ED;
+            padding-right: 5px;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        .hero-content p {
+            color: #555;
+            margin-bottom: 35px;
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .btn-hero {
+            background: var(--theme-blue);
+            color: white;
+            padding: 14px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+            font-size: 15px;
+            box-shadow: 0 10px 20px rgba(42, 116, 237, 0.3);
+        }
+
+        .btn-hero:hover {
+            background: #1b5fb0;
+            transform: translateY(-3px);
+        }
+
+        .trending-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .section-line {
+            display: none;
+            width: 60px;
+            height: 3px;
+            background: var(--theme-blue);
+            margin: 0 auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .product-item {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-item:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border-color: var(--theme-blue);
+            transform: translateY(-5px);
+        }
+
+        .product-image-wrapper {
+            height: 260px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .product-image-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .product-item:hover .product-image-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .product-content {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            text-decoration: none;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 46px;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: var(--theme-blue);
+            font-size: 16px;
+        }
+
+        .hover-icons {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .product-item:hover .hover-icons {
+            opacity: 1;
+            bottom: 20px;
+        }
+
+        .icon-btn {
+            width: 35px;
+            height: 35px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background: var(--theme-blue);
+            color: white;
+        }
+
+        footer {
+            background: #222;
+            color: #fff;
+            padding-top: 60px;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-features {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #3a3a3a;
+            padding-bottom: 40px;
+            margin-bottom: 50px;
+            gap: 20px;
+        }
+
+        .feature-box {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            width: 30%;
+            min-width: 250px;
+        }
+
+        .feature-box i {
+            font-size: 35px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .feature-box h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .feature-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col ul li a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .footer-col ul li a:hover {
+            color: #fff;
+        }
+
+        .subscribe-form {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        .subscribe-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            background: #333;
+            color: #fff;
+            outline: none;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            font-size: 14px;
+        }
+
+        .subscribe-form button {
+            background: var(--theme-blue);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            cursor: pointer;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .subscribe-form button:hover {
+            background: #1b5fb0;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: #999;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .social-icons a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #3a3a3a;
+            padding: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-logo-text {
+            color: var(--theme-blue);
+            font-weight: 800;
+            font-size: 28px;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .blur-active {
+            filter: blur(5px);
+            pointer-events: none;
+            transition: filter 0.3s ease;
+            user-select: none;
+        }
+
+        #mainPageContent {
+            transition: filter 0.3s ease;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 70px;
+            }
+
+            .nav-menu {
+                position: fixed !important;
+                top: 0;
+                left: -320px;
+                width: 300px;
+                height: 100vh;
+                background: #ffffff !important;
+                flex-direction: column;
+                padding-top: 20px;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+                z-index: 3000;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            /* Menu Links Fix */
+            .nav-menu ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 0;
+                margin-top: 10px;
+                display: flex;
+            }
+
+            .nav-menu ul li {
+                width: 100%;
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 16px 30px;
+            }
+
+            /* 2. Fixed Close Button */
+            .menu-close {
+                display: none;
+                position: fixed;
+                top: 25px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                background: #fff;
+                border-radius: 50%;
+                font-size: 20px;
+                color: #333;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                z-index: 3005;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                transition: transform 0.2s;
+            }
+
+            .menu-close:active {
+                transform: scale(0.9);
+            }
+
+            .nav-menu.active .menu-close {
+                display: flex;
+            }
+
+            /* 3. Mobile Bottom Nav Active Color */
+            .mobile-nav-item.active {
+                color: #ffffff !important;
+                font-weight: 600;
+                opacity: 1 !important;
+            }
+
+            /* 4. Logo in Menu */
+            .mobile-menu-logo {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                border-bottom: 2px solid #f5f5f5;
+                padding-bottom: 20px;
+                margin-bottom: 10px;
+            }
+
+            .custom-header-wrapper {
+                padding: 15px 20px;
+            }
+
+            .nav-container {
+                display: grid;
+                grid-template-columns: 50px 1fr auto;
+                align-items: center;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+                grid-column: 1;
+                font-size: 22px;
+                cursor: pointer;
+            }
+
+            .logo {
+                grid-column: 2;
+                justify-self: center;
+                margin: 0;
+            }
+
+            .logo img {
+                width: 50px;
+            }
+
+            .header-actions {
+                grid-column: 3;
+                justify-self: end;
+                gap: 15px;
+            }
+
+
+
+            .mobile-menu-logo img {
+                width: 120px;
+            }
+
+            .menu-close {
+                display: flex;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                background: #f0f0f0;
+                border-radius: 50%;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .menu-overlay.active {
+                display: block;
+            }
+
+            .hero-section {
+                background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 40%, rgba(255, 255, 255, 0) 100%), url('/assets/Image-4-min.jpeg') !important;
+                background-size: cover;
+                background-position: center bottom !important;
+                height: 775px !important;
+                align-items: flex-start !important;
+                padding: 175px 20px 0 20px !important;
+                text-align: center;
+            }
+
+            .hero-content {
+                margin: 0 auto;
+            }
+
+            .hero-content h1 {
+                font-size: 34px;
+            }
+
+            .hero-content p {
+                max-width: 90%;
+                margin: 0 auto 30px auto;
+            }
+
+            .footer-features {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 25px;
+            }
+
+            .footer-columns {
+                grid-template-columns: 1fr;
+                text-align: left;
+                gap: 40px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .footer-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .product-item {
+                height: auto;
+                min-height: 280px;
+            }
+
+            .product-image-wrapper {
+                height: 160px;
+                padding: 10px;
+            }
+
+            .product-content {
+                padding: 10px;
+            }
+
+            .product-title {
+                font-size: 13px;
+                height: 40px;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+            }
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: #2A74ED;
+                justify-content: space-around;
+                align-items: center;
+                padding: 12px 0;
+                z-index: 9999;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-nav-item {
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.7);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 10px;
+                font-weight: 500;
+            }
+
+            .mobile-nav-item i {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
+        }
+
+        .mobile-nav-item {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 500;
+            width: 20%;
+        }
+    </style>
+</head>
+
+<body class="home page-template-default page page-id-15 wp-custom-logo theme-xstore woocommerce-no-js">
+
+    <!-- GLOBAL WATERMARK -->
+    <style>
+        .global-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 80vw;
+            height: auto;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+            
+            user-select: none;
+        }
+        @media (max-width: 768px) {
+            .global-watermark { width: 400px; }
+        }
+        @media (max-width: 480px) {
+            .global-watermark { width: 280px; }
+        }
+    </style>
+    <img src="/assets/Sample Logo.png" alt="" class="global-watermark">
+    <!-- END GLOBAL WATERMARK -->
+
+
+    <div class="menu-overlay" onclick="toggleMenu()"></div>
+
+    <header class="custom-header-wrapper">.
+        <div class="nav-container">
+            <div class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+            <div class="logo"><a href="index.html"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></a></div>
+            <nav class="nav-menu" id="navMenu">
+                <div class="menu-close" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+                <div class="mobile-menu-logo"><img src="./assets/Sample Logo.png" alt="ZMAH Technologies"></div>
+                <ul>
+                    <li><a href="index.html" style="color:var(--theme-blue);">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                    <li><a href="contactus.html">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-bottom-nav">
+                <a href="index.html" class="mobile-nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+
+                <a href="shop.html" class="mobile-nav-item">
+                    <i class="fas fa-store"></i>
+                    <span>Shop</span>
+                </a>
+
+                <a href="cart.html" class="mobile-nav-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart</span>
+                </a>
+
+                <a href="user-profile.html" class="mobile-nav-item" id="bottomNavAccount">
+                    <i class="fas fa-user"></i>
+                    <span>Account</span>
+                </a>
+
+                <a href="javascript:void(0);" class="mobile-nav-item" id="mobileMenuBtn" onclick="toggleMenu()">
+                    <i class="fas fa-bars" id="mobileMenuIcon"></i>
+                    <span id="mobileMenuText">Menu</span>
+                </a>
+            </div>
+
+            <div class="header-actions">
+                <a href="cart.html" class="header-icon-btn"><i class="fas fa-shopping-bag"></i><span
+                        class="cart-count-badge" id="headerCartCount">0</span></a>
+                <a href="myaccount.html" class="header-icon-btn" id="headerProfileLink"><i
+                        class="fas fa-user-circle"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <span class="hero-subtitle">The Next Generation</span>
+            <h1>Innovation That<br><span class="typing-text"></span></h1>
+            <p>Get instant alerts for anyone who approaches, even if they don’t press the headphone.</p>
+            <a href="shop.html" class="btn-hero">Shop Now</a>
+        </div>
+    </section>
+
+    <div class="trending-section">
+        <div class="section-title">
+            <h2>Shop Our Trending Items</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="products-grid" id="trendingProducts">
+            <p style="width:100%; text-align:center;">Loading trending items...</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-features">
+                <div class="feature-box"><i class="fas fa-truck"></i>
+                    <div>
+                        <h4>Free Shipping</h4>
+                        <p>Delivery Moves So Quickly</p>
+                    </div>
+                </div>
+                <div class="feature-box"><i class="fas fa-undo"></i>
+                    <div>
+                        <h4>Easy & Fast Returns</h4>
+                        <p>7 Days Free Return Policy</p>
+                    </div>
+                </div>
+                <div class="feature-box"><i class="fas fa-headset"></i>
+                    <div>
+                        <h4>24/7 Customer Support</h4>
+                        <p>Online Help By Our Agents</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-columns">
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="aboutus.html">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Affiliates</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a href="shop.html">Appliances</a></li>
+                        <li><a href="shop.html">Gadgets</a></li>
+                        <li><a href="shop.html">Wearables</a></li>
+                        <li><a href="shop.html">Shop All</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contactus.html">Contact Us</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Frequently Asked Questions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Subscribe</h3>
+                    <p style="font-size:13px; color:#999; margin-bottom:10px;">Enter your <a href="#"
+                            style="color:#fff; text-decoration:underline;">Email Address</a> to get updates.</p>
+                    <div class="subscribe-form"><input type="email"
+                            placeholder="Your E-mail Address"><button>SEND</button></div>
+                    <div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i
+                                class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a
+                            href="#"><i class="fab fa-youtube"></i></a></div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-left">
+                    <h2 class="footer-logo-text">ZMAH Technologies</h2><span class="footer-contact-info">Phone: +92 3002055443 |
+                        Email: zeetechnologies.pk@gmail.com</span>
+                </div>
+                <div class="footer-copyright">Copyright © 2026. All Rights Reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = '/api';
+
+        // Replace old toggleMenu with this:
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            const overlay = document.querySelector('.menu-overlay');
+
+            // New Elements needed for effects
+            const mainContent = document.getElementById('mainPageContent');
+            const menuIcon = document.getElementById('mobileMenuIcon');
+            const menuText = document.getElementById('mobileMenuText');
+            const menuBtn = document.getElementById('mobileMenuBtn'); // The button itself
+
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+
+            if (menu.classList.contains('active')) {
+                // Menu Khul Gya
+                if (mainContent) mainContent.classList.add('blur-active'); // Blur ON
+                if (menuIcon) {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-times'); // Icon -> Cross
+                }
+                if (menuText) menuText.innerText = "Close"; // Text -> Close
+                if (menuBtn) menuBtn.classList.add('active'); // Color -> White
+
+            } else {
+                // Menu Band Ho Gya
+                if (mainContent) mainContent.classList.remove('blur-active'); // Blur OFF
+                if (menuIcon) {
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars'); // Icon -> Bars
+                }
+                if (menuText) menuText.innerText = "Menu"; // Text -> Menu
+                if (menuBtn) menuBtn.classList.remove('active'); // Color -> Gray
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadTrendingProducts();
+            updateCartCount();
+            checkLoginStatus();
+            typeWriter();
+        });
+
+        const texts = ["Drives Emotion", "Changed The World"];
+        let count = 0;
+        let index = 0;
+        let currentText = "";
+        let letter = "";
+
+        function typeWriter() {
+            if (count === texts.length) {
+                count = 0;
+            }
+            currentText = texts[count];
+            letter = currentText.slice(0, ++index);
+
+            const el = document.querySelector(".typing-text");
+            if (el) {
+                el.textContent = letter;
+                if (index < currentText.length) {
+                    setTimeout(typeWriter, 100);
+                } else {
+                    count++;
+                    index = 0;
+                    setTimeout(typeWriter, 2000);
+                }
+            }
+        }
+
+        function checkLoginStatus() {
+            const userToken = localStorage.getItem('user_token');
+            const profileLink = document.getElementById('headerProfileLink');
+            const bottomProfile = document.getElementById('bottomNavAccount');
+            if (userToken) { profileLink.href = "user-profile.html"; bottomProfile.href = "user-profile.html"; }
+            else { profileLink.href = "myaccount.html"; bottomProfile.href = "myaccount.html"; }
+        }
+
+        async function loadTrendingProducts() {
+            try {
+                const response = await fetch(`${API_URL}/products`);
+                const products = await response.json();
+
+                products.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+
+                const trending = products.slice(0, 4);
+                const container = document.getElementById('trendingProducts');
+                container.innerHTML = '';
+
+                if (trending.length === 0) { container.innerHTML = '<p style="width:100%; text-align:center;">No products found.</p>'; return; }
+
+                trending.forEach(prod => {
+                    let imageSrc = (prod.images && prod.images.length > 0) ? prod.images[0] : prod.image;
+                    let cleanImage = imageSrc ? imageSrc.replace(/\\/g, '/') : '';
+
+                    let img = cleanImage ? (cleanImage.startsWith('http') || cleanImage.startsWith('//') ? cleanImage : `http://localhost:5000/${cleanImage}`) : 'https://placehold.co/300x300?text=No+Image';
+
+                    let priceHTML = prod.discount
+                        ? `<span style="text-decoration:line-through; color:#999;">PKR ${prod.price}</span> <span style="color:#2A74ED;">PKR ${Math.round(prod.price - (prod.price * prod.discount / 100))}</span>`
+                        : `<span>PKR ${prod.price}</span>`;
+
+                    const detailLink = `product-details.html?id=${prod._id}`;
+
+                    const html = `
+                        <div class="product-item">
+                            <div class="product-image-wrapper">
+                                <a href="${detailLink}">
+                                    <img src="${img}" alt="${prod.title}" onerror="this.src='https://placehold.co/300'">
+                                </a>
+                                <div class="hover-icons">
+                                    <a href="${detailLink}" class="icon-btn"><i class="fas fa-eye"></i></a>
+                                    <a href="${detailLink}" class="icon-btn"><i class="far fa-heart"></i></a>
+                                </div>
+                            </div>
+                            <div class="product-content">
+                                <a href="${detailLink}" class="product-title">${prod.title}</a>
+                                <div class="product-price">${priceHTML}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+
+                document.querySelectorAll('.product-item').forEach(item => {
+                    item.addEventListener('mouseenter', () => { item.querySelector('.hover-icons').style.opacity = '1'; item.querySelector('.hover-icons').style.bottom = '20px'; });
+                    item.addEventListener('mouseleave', () => { item.querySelector('.hover-icons').style.opacity = '0'; item.querySelector('.hover-icons').style.bottom = '10px'; });
+                });
+
+            } catch (error) { console.error("Error:", error); }
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('headerCartCount');
+            const mobileBadge = document.getElementById('mobileBottomCartCount');
+
+            if (count > 0) {
+                badge.style.display = 'block'; badge.innerText = count;
+                if (mobileBadge) { mobileBadge.style.display = 'flex'; mobileBadge.innerText = count; }
+            } else {
+                badge.style.display = 'none';
+                if (mobileBadge) mobileBadge.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
