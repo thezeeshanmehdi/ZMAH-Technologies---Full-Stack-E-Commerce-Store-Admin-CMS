@@ -19,39 +19,94 @@ const JWT_SECRET = 'msw_secret_key_123';
 app.use(bodyParser.json({ limit: '500mb' }));
 app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
 
+const smtpPort = parseInt(process.env.SMTP_PORT) || 587;
+const isSecure = smtpPort === 465;
+
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.zoho.com',
-  port: parseInt(process.env.SMTP_PORT) || 587,
-  secure: false,
-  requireTLS: true,
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: smtpPort,
+  secure: isSecure,
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS || 'd8BUVYr8LB1n'
+    pass: (process.env.SMTP_PASS || '').replace(/\s+/g, '')
   },
   tls: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000
 });
 
+// Startup SMTP verification (safe logging, never logs password)
+if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error(`❌ [SMTP Diagnostics] Connection failed on ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${smtpPort} (secure: ${isSecure}):`, error.message);
+    } else {
+      console.log(`✅ [SMTP Diagnostics] Transporter verified & ready on ${process.env.SMTP_HOST || 'smtp.gmail.com'}:${smtpPort} (User: ${process.env.SMTP_USER})`);
+    }
+  });
+} else {
+  console.log("ℹ️ [SMTP Diagnostics] No SMTP credentials configured. Emails will run in mock mode.");
+}
+
 const sendEmail = async (mailOptions) => {
+  const digitsMatch = mailOptions.html ? mailOptions.html.match(/>(\d{6})</) : null;
+  const otpCode = digitsMatch ? digitsMatch[1] : null;
+
   if (!process.env.SMTP_PASS || !process.env.SMTP_USER) {
     console.log("\n=========================================");
-    console.log("📧 MOCK EMAIL LOGGED (SMTP credentials are not set):");
+    console.log("📧 MOCK EMAIL (No SMTP credentials configured):");
     console.log(`To: ${mailOptions.to}`);
     console.log(`Subject: ${mailOptions.subject}`);
-    const digitsMatch = mailOptions.html.match(/>(\d{6})</);
-    if (digitsMatch) {
-      console.log(`🔑 OTP Code: ${digitsMatch[1]}`);
+    if (otpCode) {
+      console.log(`\n👉 🔑 YOUR OTP CODE IS: [ ${otpCode} ] 👈\n`);
     } else {
-      const cleanText = mailOptions.html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      const cleanText = mailOptions.html ? mailOptions.html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : '';
       console.log(`Message Snippet: ${cleanText.substring(0, 300)}...`);
     }
     console.log("=========================================\n");
-    return { messageId: "mock-id" };
+    return { messageId: "mock-id", success: true };
   }
-  const info = await transporter.sendMail(mailOptions);
-  console.log(`📧 Email sent successfully! Message ID: ${info.messageId}, Response: ${info.response}`);
-  return info;
+
+  // Ensure default from address if not provided
+  if (!mailOptions.from) {
+    mailOptions.from = `"${process.env.EMAIL_FROM_NAME || 'Zee Technologies'}" <${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}>`;
+  }
+
+  // Ensure attachments only included if existing on disk
+  if (mailOptions.attachments && Array.isArray(mailOptions.attachments)) {
+    mailOptions.attachments = mailOptions.attachments.filter(att => !att.path || fs.existsSync(att.path));
+  }
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`\n📧 [SMTP SUCCESS] Delivered to: ${mailOptions.to} | Subject: "${mailOptions.subject}" | Message ID: ${info.messageId}`);
+    console.log(`   Accepted: ${JSON.stringify(info.accepted)} | Rejected: ${JSON.stringify(info.rejected)} | Response: ${info.response}`);
+    return {
+      success: true,
+      messageId: info.messageId,
+      accepted: info.accepted,
+      rejected: info.rejected,
+      response: info.response,
+      envelope: info.envelope
+    };
+  } catch (err) {
+    console.error(`\n❌ [SMTP ERROR] Delivery failed to: ${mailOptions.to} | Subject: "${mailOptions.subject}" | Error: ${err.message}`);
+    console.log("=========================================");
+    console.log("📧 LOCAL CONSOLE EMAIL BACKUP:");
+    console.log(`To: ${mailOptions.to}`);
+    console.log(`Subject: ${mailOptions.subject}`);
+    if (otpCode) {
+      console.log(`\n👉 🔑 YOUR OTP CODE IS: [ ${otpCode} ] 👈\n`);
+    } else {
+      const cleanText = mailOptions.html ? mailOptions.html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : '';
+      console.log(`Message Snippet: ${cleanText.substring(0, 300)}...`);
+    }
+    console.log("=========================================\n");
+    return { messageId: "failed", success: false, error: err.message };
+  }
 };
 
 const sendOrderConfirmationEmail = async (order) => {
@@ -95,7 +150,7 @@ const sendOrderConfirmationEmail = async (order) => {
     });
 
     const mailOptions = {
-      from: `"ZMAH Orders" <${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}>`,
+      from: `"ZMAH Orders" <${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}>`,
       to: recipientEmail,
       subject: `Order Confirmed: #${order.order_id} - ZMAH Technologies`,
       attachments: [{
@@ -322,7 +377,7 @@ const sendOrderConfirmationEmail = async (order) => {
       </div>
       <div class="footer">
         <p>&copy; 2026 ZMAH Technologies. All rights reserved.</p>
-        <p>If you have any questions, please contact our support team at <a href="mailto:${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}">${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}</a></p>
+        <p>If you have any questions, please contact our support team at <a href="mailto:${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}">${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}</a></p>
       </div>
     </div>
   </div>
@@ -331,9 +386,11 @@ const sendOrderConfirmationEmail = async (order) => {
       `
     };
 
-    await sendEmail(mailOptions);
+    const result = await sendEmail(mailOptions);
+    return { ...result, to: recipientEmail };
   } catch (error) {
-    console.error("sendOrderConfirmationEmail Error:", error);
+    console.error("sendOrderConfirmationEmail Error:", error.message);
+    return { success: false, error: error.message };
   }
 };
 
@@ -392,7 +449,7 @@ const sendOrderStatusEmail = async (order) => {
     const itemsSummary = cartItems.map(item => `${item.title} (x${item.quantity})`).join(', ');
 
     const mailOptions = {
-      from: `"ZMAH Orders" <${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}>`,
+      from: `"ZMAH Orders" <${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}>`,
       to: recipientEmail,
       subject: `Order Status Update: #${order.order_id} - ${order.status}`,
       attachments: [{
@@ -571,7 +628,7 @@ const sendOrderStatusEmail = async (order) => {
       </div>
       <div class="footer">
         <p>&copy; 2026 ZMAH Technologies. All rights reserved.</p>
-        <p>If you have any questions, please contact our support team at <a href="mailto:${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}">${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}</a></p>
+        <p>If you have any questions, please contact our support team at <a href="mailto:${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}">${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}</a></p>
       </div>
     </div>
   </div>
@@ -580,16 +637,18 @@ const sendOrderStatusEmail = async (order) => {
       `
     };
  
-    await sendEmail(mailOptions);
+    const result = await sendEmail(mailOptions);
+    return { ...result, to: recipientEmail };
   } catch (error) {
-    console.error("sendOrderStatusEmail Error:", error);
+    console.error("sendOrderStatusEmail Error:", error.message);
+    return { success: false, error: error.message };
   }
 };
 
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
-// app.use(cors());
+app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.get('/', (req, res) => {
@@ -600,27 +659,10 @@ app.get('/', (req, res) => {
 app.use('/assets', express.static(path.join(__dirname, '../frontend/assets')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Uploads backend mein hi rahega
 
-const dbURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/msw_enterprises';
-mongoose.connect(dbURI)
-  .then(async () => {
-    console.log("MongoDB Connected");
-    const adminExists = await Admin.findOne({ username: 'msw_admin' });
-    const defaultEmail = process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com';
-    if (!adminExists) {
-      const hash = await bcrypt.hash('msw_password', 10);
-      await new Admin({ username: 'msw_admin', password: hash, email: defaultEmail }).save();
-      console.log("Default Admin Created");
-    } else if (adminExists.email !== defaultEmail) {
-      adminExists.email = defaultEmail;
-      await adminExists.save();
-      console.log("Default Admin Email Synchronized");
-    }
-  }).catch(err => console.log(err));
-
 const adminSchema = new mongoose.Schema({
   username: { type: String, unique: true },
   password: String,
-  email: { type: String, default: 'zeetechnologies@zohomail.com' },
+  email: { type: String, default: 'zeetechnologies.pk@gmail.com' },
   resetOTP: String, otpExpires: Date
 });
 const Admin = mongoose.model('Admin', adminSchema);
@@ -654,6 +696,135 @@ const orderSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 const Order = mongoose.model('Order', orderSchema);
+
+const initialSampleProducts = [
+  {
+    title: "Audionic Airbud 425 TWS Wireless Earbuds",
+    description: "Experience crystal clear audio, ultra-low latency gaming mode, and up to 30 hours of playtime with fast Type-C charging.",
+    price: 4999,
+    discount: 20,
+    shippingFee: 0,
+    stock: 25,
+    sold: 14,
+    weight: "0.2kg",
+    images: [
+      "uploads/1764950697846-Audionic Airpods.jpeg",
+      "uploads/1764950697884-audionic-the-sound-master-black-airbud-425-tws-earbuds-3577564092841.jpeg",
+      "uploads/1764950697892-audionic-the-sound-master-black-airbud-425-tws-earbuds-35775641125020.jpeg",
+      "uploads/1764950697893-audionic-the-sound-master-black-airbud-425-tws-earbuds-35775641288860.jpeg"
+    ]
+  },
+  {
+    title: "Audionic Airbud 495 ANC Pro Earbuds",
+    description: "Active Noise Cancellation (ANC) with Environmental Noise Cancellation (ENC) for ultra-clear calls and immersive bass sound.",
+    price: 6499,
+    discount: 15,
+    shippingFee: 0,
+    stock: 18,
+    sold: 22,
+    weight: "0.25kg",
+    images: [
+      "uploads/1765984143332-Airbud495-Image-4.jpeg",
+      "uploads/1765984143351-Airbud495-Image-1.jpeg",
+      "uploads/1765984143368-Airbud495-Image-2.jpeg"
+    ]
+  },
+  {
+    title: "Audionic Flair Wireless Bluetooth Neckband",
+    description: "Long-lasting battery life with dynamic bass drivers, magnetic earbuds, and comfortable ergonomic neckband design.",
+    price: 3499,
+    discount: 10,
+    shippingFee: 150,
+    stock: 30,
+    sold: 8,
+    weight: "0.15kg",
+    images: [
+      "uploads/1764953667164-Flair_Carbon_4.png",
+      "uploads/1764953667170-Flair_Beige_4.png",
+      "uploads/1764953667175-Flair_IceBlue_2.png"
+    ]
+  },
+  {
+    title: "Audionic Ignite Smartwatch HD Touch Display",
+    description: "Smart fitness tracker with heart rate monitor, SpO2 sensor, multiple sports modes, Bluetooth calling, and water resistance.",
+    price: 7999,
+    discount: 25,
+    shippingFee: 0,
+    stock: 12,
+    sold: 19,
+    weight: "0.3kg",
+    images: [
+      "uploads/1764954166553-ignite-black-02.png",
+      "uploads/1764953797785-BUDRENDER33.png"
+    ]
+  },
+  {
+    title: "Premium Studio Wireless Hi-Fi Headphones",
+    description: "Deep bass, soft memory-foam ear cushions, foldable design, and 40-hour battery life for studio-grade audio experience.",
+    price: 8999,
+    discount: 30,
+    shippingFee: 0,
+    stock: 15,
+    sold: 31,
+    weight: "0.45kg",
+    images: [
+      "uploads/1764953366227-Ecommerce-Image-1_3.jpeg",
+      "uploads/1764953366239-Ecommerce-Image-1_1.jpeg",
+      "uploads/1764953366253-Ecommerce-Image-1.jpeg"
+    ]
+  }
+];
+
+async function connectDatabase() {
+  let uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/zmah_technologies';
+  let connected = false;
+  try {
+    console.log("Attempting to connect to MongoDB at:", uri);
+    await mongoose.connect(uri, { serverSelectionTimeoutMS: 2500 });
+    console.log("MongoDB Connected Successfully to:", uri);
+    connected = true;
+  } catch (err) {
+    console.log("Direct MongoDB connection unavailable, booting embedded local database...");
+    try {
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      const mongod = await MongoMemoryServer.create({
+        instance: { dbName: 'zmah_technologies' }
+      });
+      uri = mongod.getUri() + 'zmah_technologies';
+      await mongoose.connect(uri);
+      console.log("Embedded Local Database Connected Successfully to:", uri);
+      connected = true;
+    } catch (embErr) {
+      console.error("Embedded Database Error:", embErr.message);
+    }
+  }
+
+  if (connected) {
+    try {
+      const adminExists = await Admin.findOne({ username: 'msw_admin' });
+      const defaultEmail = process.env.EMAIL_FROM || 'zeetechnologies.pk@gmail.com';
+      if (!adminExists) {
+        const hash = await bcrypt.hash('msw_password', 10);
+        await new Admin({ username: 'msw_admin', password: hash, email: defaultEmail }).save();
+        console.log("Default Admin Created (Username: msw_admin, Password: msw_password)");
+      } else if (adminExists.email !== defaultEmail) {
+        adminExists.email = defaultEmail;
+        await adminExists.save();
+        console.log("Default Admin Email Synchronized");
+      }
+
+      const prodCount = await Product.countDocuments();
+      if (prodCount === 0) {
+        await Product.insertMany(initialSampleProducts);
+        console.log(`Auto-seeded ${initialSampleProducts.length} initial products with local images.`);
+      }
+    } catch (seedErr) {
+      console.error("Initialization Error:", seedErr.message);
+    }
+  }
+}
+
+connectDatabase();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
@@ -821,14 +992,29 @@ app.post('/api/user/login', async (req, res) => {
 // --- RECOVERY ROUTES ---
 app.post('/api/user/forgot-password', async (req, res) => {
   const { email } = req.body;
+  console.log(`\n🔍 [OTP REQUEST] Target Email from Frontend: "${email}"`);
   try {
-    const user = await User.findOne({ email });
-    if (!user) return res.json({ success: false, message: "User not found" });
+    if (!email) {
+      console.warn("⚠️ [OTP ERROR] No email provided in request body.");
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') } });
+    if (!user) {
+      console.warn(`⚠️ [OTP ERROR] User lookup failed. No account with email: "${cleanEmail}"`);
+      return res.json({ success: false, message: "User not found" });
+    }
+    console.log(`👤 [OTP USER FOUND] DB User ID: ${user._id} | DB Email: "${user.email}"`);
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.resetOTP = otp; user.otpExpires = Date.now() + 600000;
+    user.resetOTP = otp;
+    user.otpExpires = Date.now() + 600000;
     await user.save();
-    await sendEmail({
-      from: `"ZMAH Support" <${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}>`, to: email,
+    console.log(`🔑 [OTP GENERATED] 6-digit OTP created & saved to DB.`);
+
+    const mailOptions = {
+      from: `"${process.env.EMAIL_FROM_NAME || 'Zee Technologies'}" <${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}>`,
+      to: user.email,
       subject: 'Reset Your Password - ZMAH Technologies',
       attachments: [{
         filename: 'logo.png',
@@ -961,18 +1147,26 @@ app.post('/api/user/forgot-password', async (req, res) => {
       </div>
       <div class="footer">
         <p>&copy; 2026 ZMAH Technologies. All rights reserved.</p>
-        <p>If you need assistance, contact us at <a href="mailto:zeetechnologies.pk@gmail.com">zeetechnologies.pk@gmail.com</a></p>
+        <p>If you need assistance, contact us at <a href="mailto:${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}">${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}</a></p>
       </div>
     </div>
   </div>
 </body>
 </html>
             `
-    });
-    res.json({ success: true });
+    };
+
+    console.log(`📤 [OTP CALLING sendEmail] Recipient: "${user.email}"`);
+    const emailResult = await sendEmail(mailOptions);
+
+    if (!emailResult.success) {
+      return res.status(500).json({ success: false, message: `Failed to deliver OTP email: ${emailResult.error || 'SMTP delivery failure'}` });
+    }
+
+    res.json({ success: true, message: "OTP sent to your email" });
   } catch (e) {
-    console.error("Forgot Password Error:", e); // Render logs mein error print hoga
-    res.status(500).json({ success: false, message: e.message }); // Frontend ko error dikhega
+    console.error("Forgot Password Error:", e);
+    res.status(500).json({ success: false, message: e.message });
   }
 });
 
@@ -990,15 +1184,26 @@ app.post('/api/user/reset-password', async (req, res) => {
 
 app.post('/api/admin/forgot-password', async (req, res) => {
   const { email } = req.body;
+  console.log(`\n🔍 [ADMIN OTP REQUEST] Target Email: "${email}"`);
   try {
-    if (!email) return res.json({ success: false, message: "Email is required" });
-    const admin = await Admin.findOne({ email });
-    if (!admin) return res.json({ success: false, message: "Admin account with this email not found" });
+    if (!email) return res.status(400).json({ success: false, message: "Email is required" });
+    const cleanEmail = email.trim().toLowerCase();
+    const admin = await Admin.findOne({ email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') } });
+    if (!admin) {
+      console.warn(`⚠️ [ADMIN OTP ERROR] Admin account with email "${cleanEmail}" not found`);
+      return res.json({ success: false, message: "Admin account with this email not found" });
+    }
+    console.log(`👑 [ADMIN FOUND] DB Admin ID: ${admin._id} | DB Email: "${admin.email}"`);
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    admin.resetOTP = otp; admin.otpExpires = Date.now() + 600000;
+    admin.resetOTP = otp;
+    admin.otpExpires = Date.now() + 600000;
     await admin.save();
-    await sendEmail({
-      from: `"ZMAH Admin" <${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}>`, to: admin.email,
+    console.log(`🔑 [ADMIN OTP GENERATED] Saved to DB.`);
+
+    const emailResult = await sendEmail({
+      from: `"${process.env.EMAIL_FROM_NAME || 'Zee Technologies'}" <${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}>`,
+      to: admin.email,
       subject: 'Admin OTP - ZMAH Technologies',
       attachments: [{
         filename: 'logo.png',
@@ -1130,7 +1335,7 @@ app.post('/api/admin/forgot-password', async (req, res) => {
       </div>
       <div class="footer">
         <p>&copy; 2026 ZMAH Technologies. All rights reserved.</p>
-        <p>If you need assistance, contact us at <a href="mailto:${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}">${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}</a></p>
+        <p>If you need assistance, contact us at <a href="mailto:${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}">${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}</a></p>
       </div>
     </div>
   </div>
@@ -1138,7 +1343,12 @@ app.post('/api/admin/forgot-password', async (req, res) => {
 </html>
             `
     });
-    res.json({ success: true });
+
+    if (!emailResult.success) {
+      return res.status(500).json({ success: false, message: `Failed to deliver OTP email: ${emailResult.error || 'SMTP delivery failure'}` });
+    }
+
+    res.json({ success: true, message: "Admin OTP sent to email" });
   } catch (e) {
     console.error("Admin Forgot Password Error:", e);
     res.status(500).json({ success: false, message: e.message });
@@ -1165,16 +1375,37 @@ app.post('/api/order/place', verifyToken, async (req, res) => {
   try {
     const count = await Order.countDocuments();
     const order_id = `${String(count + 1).padStart(2, '0')}${new Date().getMonth() + 1}${new Date().getFullYear()}`;
-    const newOrder = new Order({ user_id: req.user.id, order_id, ...req.body });
+    const user = await User.findById(req.user.id);
+    const customerDetails = req.body.customer_details || {};
+    if (!customerDetails.email && user) {
+      customerDetails.email = user.email;
+    }
+    console.log(`\n🛒 [ORDER PLACEMENT] Order #${order_id} by User ID ${req.user.id} | Recipient Email: "${customerDetails.email}"`);
+
+    const newOrder = new Order({
+      user_id: req.user.id,
+      order_id,
+      ...req.body,
+      customer_details: customerDetails
+    });
     await newOrder.save();
     if (req.body.cart_items) {
       for (const item of req.body.cart_items) {
         if (item.id) await Product.findByIdAndUpdate(item.id, { $inc: { stock: -item.quantity, sold: item.quantity } });
       }
     }
-    sendOrderConfirmationEmail(newOrder).catch(err => console.error("Order confirmation email failed to send:", err));
+    sendOrderConfirmationEmail(newOrder).then(resInfo => {
+      if (resInfo && !resInfo.success) {
+        console.warn(`⚠️ [ORDER CONFIRMATION EMAIL FAILED] Order #${order_id}:`, resInfo.error);
+      } else if (resInfo && resInfo.success) {
+        console.log(`✅ [ORDER CONFIRMATION EMAIL DELIVERED] Order #${order_id} | Recipient: ${resInfo.to || customerDetails.email} | Message ID: ${resInfo.messageId}`);
+      }
+    }).catch(err => console.error("Order confirmation email failed to send:", err));
     res.json({ success: true, message: "Order Placed", orderId: order_id });
-  } catch (err) { res.status(500).json({ success: false }); }
+  } catch (err) {
+    console.error("Order place error:", err);
+    res.status(500).json({ success: false });
+  }
 });
 
 app.post('/api/order/cancel/:id', verifyToken, async (req, res) => {
@@ -1238,13 +1469,17 @@ app.get('/api/admin/orders', async (req, res) => {
 app.put('/api/admin/order/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
+    console.log(`\n📦 [ADMIN ORDER STATUS UPDATE] Order ID: "${req.params.id}" -> New Status: "${status}"`);
 
     let order = await Order.findOne({ order_id: req.params.id });
     if (!order && mongoose.Types.ObjectId.isValid(req.params.id)) {
       order = await Order.findById(req.params.id);
     }
 
-    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+    if (!order) {
+      console.warn(`⚠️ [ORDER STATUS ERROR] Order not found for ID: "${req.params.id}"`);
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
 
     if (order.status === 'Delivered') {
       return res.status(400).json({ success: false, message: "Delivered orders cannot be modified" });
@@ -1257,10 +1492,20 @@ app.put('/api/admin/order/:id/status', async (req, res) => {
       order.cancelledBy = null;
     }
     await order.save();
+    console.log(`💾 [ORDER UPDATED IN DB] Order #${order.order_id} status saved as "${status}"`);
 
-    sendOrderStatusEmail(order).catch(err => console.error("Admin order status email failed to send:", err));
+    sendOrderStatusEmail(order).then(resInfo => {
+      if (resInfo && !resInfo.success) {
+        console.warn(`⚠️ [ORDER STATUS EMAIL FAILED] Could not deliver status email for #${order.order_id}:`, resInfo.error);
+      } else if (resInfo && resInfo.success) {
+        console.log(`✅ [ORDER STATUS EMAIL DELIVERED] Order #${order.order_id} | Recipient: ${resInfo.to || order.customer_details?.email} | Message ID: ${resInfo.messageId}`);
+      }
+    }).catch(err => console.error("Admin order status email failed to send:", err));
     res.json({ success: true });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) {
+    console.error("Admin order status error:", e);
+    res.status(500).json({ success: false, message: e.message });
+  }
 });
 
 app.put('/api/admin/update', verifyToken, async (req, res) => {
@@ -1467,8 +1712,8 @@ app.post('/api/contact', async (req, res) => {
   const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
   const currentDate = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' });
   try {
-    await sendEmail({
-      from: `"ZMAH Contact" <${process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com'}>`, to: process.env.EMAIL_FROM || 'zeetechnologies@zohomail.com', replyTo: email,
+    const emailResult = await sendEmail({
+      from: `"${process.env.EMAIL_FROM_NAME || 'Zee Technologies'}" <${process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com'}>`, to: process.env.EMAIL_FROM || process.env.SMTP_USER || 'zeetechnologies.pk@gmail.com', replyTo: email,
       subject: `Contact Inquiry: ${subject}`,
       attachments: [{
         filename: 'logo.png',
@@ -1528,23 +1773,21 @@ app.post('/api/contact', async (req, res) => {
       color: #0f172a;
       margin-top: 0;
       margin-bottom: 20px;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 15px;
     }
     .info-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
     .info-table td {
-      padding: 12px 0;
-      vertical-align: top;
-      font-size: 15px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
     }
     .info-table .label {
-      width: 120px;
       font-weight: 600;
-      color: #475569;
+      color: #64748b;
+      width: 130px;
     }
     .info-table .value {
       color: #0f172a;
@@ -1552,18 +1795,17 @@ app.post('/api/contact', async (req, res) => {
     .message-box {
       background-color: #f8fafc;
       border-left: 4px solid #2563eb;
-      border-radius: 4px;
-      padding: 20px;
-      font-style: italic;
-      color: #334155;
-      font-size: 15px;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
       line-height: 1.6;
-      margin-bottom: 30px;
+      color: #334155;
       white-space: pre-wrap;
+      margin-top: 8px;
     }
     .footer {
       background-color: #f8fafc;
-      padding: 24px 40px;
+      padding: 20px 40px;
       text-align: center;
       border-top: 1px solid #e2e8f0;
     }
@@ -1571,7 +1813,6 @@ app.post('/api/contact', async (req, res) => {
       font-size: 12px;
       color: #64748b;
       margin: 0;
-      line-height: 1.5;
     }
   </style>
 </head>
@@ -1626,8 +1867,83 @@ app.post('/api/contact', async (req, res) => {
 </html>
             `
     });
-    res.json({ success: true });
-  } catch (e) { res.status(500).json({ success: false }); }
+
+    if (!emailResult.success) {
+      return res.status(500).json({ success: false, message: `Failed to deliver contact inquiry: ${emailResult.error || 'SMTP delivery failure'}` });
+    }
+
+    res.json({ success: true, message: "Message sent successfully" });
+  } catch (e) {
+    console.error("Contact Form Error:", e);
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+// --- DIAGNOSTIC / DEV EMAIL ENDPOINTS (Never exposes credentials) ---
+app.get('/api/dev/verify-smtp', async (req, res) => {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    return res.json({ success: false, message: "SMTP credentials not configured in .env" });
+  }
+  try {
+    await transporter.verify();
+    res.json({
+      success: true,
+      message: "SMTP Transporter verified successfully",
+      config: {
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: smtpPort,
+        secure: isSecure,
+        user: process.env.SMTP_USER,
+        fromName: process.env.EMAIL_FROM_NAME || 'Zee Technologies',
+        fromEmail: process.env.EMAIL_FROM || process.env.SMTP_USER
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "SMTP Verification failed: " + err.message,
+      code: err.code,
+      command: err.command
+    });
+  }
+});
+
+app.post('/api/dev/test-email', async (req, res) => {
+  const targetEmail = req.body.to || process.env.SMTP_USER;
+  try {
+    const result = await sendEmail({
+      to: targetEmail,
+      subject: "Test Diagnostic Email - ZMAH Technologies",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f8fafc; border-radius: 8px;">
+          <h2 style="color: #0f172a;">SMTP Delivery Verification</h2>
+          <p>This is an automated test email confirming that SMTP is working properly on <strong>${process.env.SMTP_HOST || 'smtp.gmail.com'}</strong>.</p>
+          <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+          <p><strong>Target:</strong> ${targetEmail}</p>
+        </div>
+      `
+    });
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to deliver test email: " + (result.error || "Unknown error")
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Test email successfully delivered",
+      messageId: result.messageId,
+      response: result.response,
+      recipient: targetEmail
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Exception during test email: " + err.message
+    });
+  }
 });
 
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`));

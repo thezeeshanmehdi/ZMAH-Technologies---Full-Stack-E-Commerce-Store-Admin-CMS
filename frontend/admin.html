@@ -1683,7 +1683,9 @@
 
 <script>
     let allOrdersData = [];
-    const API_URL = '/api';
+    const API_URL = (window.location.port === '5000' || (window.location.port === '' && window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'))
+        ? '/api'
+        : 'http://localhost:5000/api';
     const token = localStorage.getItem('admin_token');
     let isEditing = false;
     let editId = null;
@@ -2062,7 +2064,8 @@
 
             products.forEach(p => {
                 let imageSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
-                let img = imageSrc ? `${imageSrc.replace(/\\/g, '/')}` : '';
+                let clean = imageSrc ? imageSrc.replace(/\\/g, '/') : '';
+                let img = clean ? (clean.startsWith('http') || clean.startsWith('//') ? clean : (clean.startsWith('/') ? clean : `/${clean}`)) : 'https://placehold.co/50';
 
                 tb.innerHTML += `
                 <tr>

@@ -878,7 +878,9 @@
     </div>
 
     <script>
-        const API_URL = '/api';
+        const API_URL = (window.location.port === '5000' || (window.location.port === '' && window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'))
+            ? '/api'
+            : 'http://localhost:5000/api';
 
         function toggleMenu() {
             const menu = document.getElementById('navMenu');

@@ -527,10 +527,14 @@
             fetchData(start, end);
         }
 
+        const API_URL = (window.location.port === '5000' || (window.location.port === '' && window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'))
+            ? '/api'
+            : 'http://localhost:5000/api';
+
         async function fetchData(startDate = null, endDate = null) {
             document.getElementById('loader').style.display = 'flex';
             
-            let url = '/api/admin/revenue-analytics';
+            let url = `${API_URL}/admin/revenue-analytics`;
             if (document.getElementById('quickFilter').value === 'custom') {
                 startDate = new Date(document.getElementById('startDate').value);
                 endDate = new Date(document.getElementById('endDate').value);

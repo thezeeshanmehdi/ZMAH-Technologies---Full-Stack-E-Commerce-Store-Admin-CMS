@@ -965,7 +965,9 @@
     </div>
 
     <script>
-        const API_URL = '/api';
+        const API_URL = (window.location.port === '5000' || (window.location.port === '' && window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'))
+            ? '/api'
+            : 'http://localhost:5000/api';
         function toggleView(view) {
             const loginView = document.getElementById('loginView');
             const regView = document.getElementById('registerView');
@@ -1110,7 +1112,7 @@
 
                 <div class="input-group-modern">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="uRecoverEmail" placeholder="Enter your email address">
+                    <input type="email" id="uRecoverEmail" placeholder="Enter your email address" autocomplete="off">
                 </div>
 
                 <button onclick="sendUserOTP()" class="btn-modern-gradient" id="btnSendOtpUser">
@@ -1125,7 +1127,7 @@
 
                 <div class="input-group-modern">
                     <i class="fas fa-key"></i>
-                    <input type="text" id="uOtp" placeholder="Enter 6-digit OTP">
+                    <input type="text" id="uOtp" placeholder="Enter 6-digit OTP" style="text-align:center; font-weight:600; letter-spacing:2px;">
                 </div>
 
                 <div class="input-group-modern">
@@ -1134,12 +1136,18 @@
                 </div>
 
                 <button onclick="resetUserPass()" class="btn-modern-gradient" id="btnResetUser">
-                    Reset Password
+                    Update Password
                 </button>
+
+                <div style="margin-top:14px; text-align:center;">
+                    <button type="button" id="btnResendUserOtp" onclick="resendUserOTP()" style="background:none; border:none; color:#2A74ED; font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline;">
+                        Resend OTP (3 left)
+                    </button>
+                    <div id="resendUserTimer" style="font-size:12px; color:#64748b; margin-top:3px;"></div>
+                </div>
             </div>
 
-            <button onclick="document.getElementById('uForgotModal').style.display='none'" class="btn-close-text">Cancel
-                & Go Back</button>
+            <button onclick="document.getElementById('uForgotModal').style.display='none'" class="btn-close-text">Cancel & Go Back</button>
         </div>
     </div>
 
@@ -1151,221 +1159,7 @@
             <button onclick="closeAppModal('appAlertModal')" class="app-btn btn-blue">Okay</button>
         </div>
     </div>
-    <script>
-        function togglePassword(inputId, icon) {
-            const input = document.getElementById(inputId);
 
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-        function openUserForgot() {
-            document.getElementById('uForgotModal').style.display = 'flex';
-            document.getElementById('uStep1').style.display = 'block';
-            document.getElementById('uStep2').style.display = 'none';
-        }
-
-        async function sendUserOTP() {
-            const email = document.getElementById('uRecoverEmail').value;
-            const res = await fetch('/api/user/forgot-password', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            });
-            const data = await res.json();
-            if (data.success) {
-                document.getElementById('uStep1').style.display = 'none';
-                document.getElementById('uStep2').style.display = 'block';
-            } else { alert(data.message); }
-        }
-
-        function closeAppModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function showAlert(type, title, msg) {
-            const modal = document.getElementById('appAlertModal');
-            const icon = document.getElementById('appAlertIcon');
-
-            document.getElementById('appAlertTitle').innerText = title;
-            document.getElementById('appAlertMsg').innerText = msg;
-
-            if (type === 'success') {
-                icon.className = 'modal-icon icon-ok';
-                icon.innerHTML = '<i class="fas fa-check"></i>';
-            } else {
-                icon.className = 'modal-icon icon-bad';
-                icon.innerHTML = '<i class="fas fa-times"></i>';
-            }
-            modal.style.display = 'flex';
-        }
-
-        async function sendUserOTP() {
-            const email = document.getElementById('uRecoverEmail').value;
-            if (!email) return showAlert('error', 'Missing Input', 'Please enter your email.');
-
-            try {
-                const res = await fetch('/api/user/forgot-password', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById('uStep1').style.display = 'none';
-                    document.getElementById('uStep2').style.display = 'block';
-                } else {
-                    showAlert('error', 'Failed', data.message);
-                }
-            } catch (e) { showAlert('error', 'Error', 'Server connection failed'); }
-        }
-
-        async function resetUserPass() {
-            const email = document.getElementById('uRecoverEmail').value;
-            const otp = document.getElementById('uOtp').value;
-            const newPassword = document.getElementById('uNewPass').value;
-
-            try {
-                const res = await fetch('/api/user/reset-password', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otp, newPassword })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    closeAppModal('uForgotModal');
-                    showAlert('success', 'Success', 'Password updated! Please login.');
-                } else {
-                    showAlert('error', 'Failed', data.message);
-                }
-            } catch (e) { showAlert('error', 'Error', 'Server error'); }
-        }
-    </script>
-    <div id="uForgotModal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <h3>Reset Password</h3>
-
-            <div id="uStep1">
-                <p>Enter your registered email.</p>
-                <input type="email" id="uRecoverEmail" class="form-control" placeholder="Email Address"
-                    style="margin-bottom:10px;">
-                <button onclick="sendUserOTP()" class="btn-submit">Send OTP</button>
-            </div>
-
-            <div id="uStep2" style="display:none;">
-                <p style="color:green">OTP Sent!</p>
-                <input type="text" id="uOtp" class="form-control" placeholder="OTP Code" style="margin-bottom:10px;">
-                <input type="password" id="uNewPass" class="form-control" placeholder="New Password"
-                    style="margin-bottom:10px;">
-                <button onclick="resetUserPass()" class="btn-submit">Update Password</button>
-            </div>
-
-            <button onclick="document.getElementById('uForgotModal').style.display='none'"
-                style="margin-top:10px; border:none; background:none; cursor:pointer;">Close</button>
-        </div>
-    </div>
-
-    <script>
-        function toggleView(view) {
-            const loginView = document.getElementById('loginView');
-            const regView = document.getElementById('registerView');
-            const title = document.getElementById('pageTitle');
-            const sub = document.getElementById('pageSub');
-
-            if (view === 'register') {
-                loginView.classList.remove('active');
-                regView.classList.add('active');
-                title.innerText = "Sign Up";
-                sub.innerText = "Create new account";
-            } else {
-                regView.classList.remove('active');
-                loginView.classList.add('active');
-                title.innerText = "Sign In";
-                sub.innerText = "Get Started";
-            }
-        }
-
-        function openUserForgot() {
-            document.getElementById('uForgotModal').style.display = 'flex';
-            document.getElementById('uStep1').style.display = 'block';
-            document.getElementById('uStep2').style.display = 'none';
-
-            document.getElementById('uRecoverEmail').value = '';
-            document.getElementById('uOtp').value = '';
-            document.getElementById('uNewPass').value = '';
-        }
-
-        async function sendUserOTP() {
-            const email = document.getElementById('uRecoverEmail').value;
-            const btn = document.getElementById('btnSendOtpUser');
-
-            if (!email) return showAlert('error', 'Missing Input', 'Please enter your email.');
-
-            const originalText = btn.innerText;
-            btn.innerText = "Sending...";
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/api/user/forgot-password', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById('uStep1').style.display = 'none';
-                    document.getElementById('uStep2').style.display = 'block';
-                } else {
-                    showAlert('error', 'Failed', data.message);
-                }
-            } catch (e) {
-                showAlert('error', 'Error', 'Server connection failed');
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        async function resetUserPass() {
-            const email = document.getElementById('uRecoverEmail').value;
-            const otp = document.getElementById('uOtp').value;
-            const newPassword = document.getElementById('uNewPass').value;
-            const btn = document.getElementById('btnResetUser');
-
-            if (!otp || !newPassword) return showAlert('error', 'Missing Fields', 'Please fill all fields');
-
-            btn.innerText = "Updating...";
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/api/user/reset-password', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otp, newPassword })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    document.getElementById('uForgotModal').style.displa
-                    document.getElementById('passwordSuccessModal').style.display = 'flex';
-                } else {
-                    showAlert('error', 'Failed', data.message);
-                }
-            } catch (e) {
-                showAlert('error', 'Error', 'Server error');
-            } finally {
-                btn.innerText = "Update Password";
-                btn.disabled = false;
-            }
-        }
-
-        function finishPasswordReset() {
-            document.getElementById('passwordSuccessModal').style.display = 'none';
-            toggleView('login');
-        }
-    </script>
     <div id="passwordSuccessModal" class="custom-modal-overlay">
         <div class="custom-modal-box premium-success-box">
 
@@ -1381,6 +1175,178 @@
             </button>
         </div>
     </div>
+
+    <script>
+        let userResendCount = 3;
+        let userResendInterval = null;
+
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function openUserForgot() {
+            document.getElementById('uForgotModal').style.display = 'flex';
+            document.getElementById('uStep1').style.display = 'block';
+            document.getElementById('uStep2').style.display = 'none';
+            document.getElementById('uRecoverEmail').value = '';
+            document.getElementById('uOtp').value = '';
+            document.getElementById('uNewPass').value = '';
+            userResendCount = 3;
+            if (userResendInterval) clearInterval(userResendInterval);
+            const resendBtn = document.getElementById('btnResendUserOtp');
+            if (resendBtn) {
+                resendBtn.disabled = false;
+                resendBtn.style.opacity = '1';
+                resendBtn.style.cursor = 'pointer';
+                resendBtn.innerText = "Resend OTP (3 left)";
+            }
+            const timerEl = document.getElementById('resendUserTimer');
+            if (timerEl) timerEl.innerText = '';
+        }
+
+        function closeAppModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function showAlert(type, title, msg) {
+            const modal = document.getElementById('appAlertModal');
+            const icon = document.getElementById('appAlertIcon');
+            document.getElementById('appAlertTitle').innerText = title;
+            document.getElementById('appAlertMsg').innerText = msg;
+
+            if (type === 'success') {
+                icon.className = 'modal-icon icon-ok';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                icon.className = 'modal-icon icon-bad';
+                icon.innerHTML = '<i class="fas fa-times"></i>';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function startUserResendCooldown() {
+            const btn = document.getElementById('btnResendUserOtp');
+            const timerEl = document.getElementById('resendUserTimer');
+            if (!btn || !timerEl) return;
+
+            if (userResendCount <= 0) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.style.textDecoration = 'none';
+                btn.innerText = "No resends remaining";
+                timerEl.innerText = "Please wait or contact support.";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor = 'not-allowed';
+
+            let seconds = 30;
+            timerEl.innerText = `Wait ${seconds}s to resend (${userResendCount} left)`;
+
+            if (userResendInterval) clearInterval(userResendInterval);
+            userResendInterval = setInterval(() => {
+                seconds--;
+                if (seconds > 0) {
+                    timerEl.innerText = `Wait ${seconds}s to resend (${userResendCount} left)`;
+                } else {
+                    clearInterval(userResendInterval);
+                    timerEl.innerText = '';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.innerText = `Resend OTP (${userResendCount} left)`;
+                }
+            }, 1000);
+        }
+
+        async function resendUserOTP() {
+            if (userResendCount <= 0) return;
+            userResendCount--;
+            await sendUserOTP(true);
+            startUserResendCooldown();
+        }
+
+        async function sendUserOTP(isResend = false) {
+            const email = document.getElementById('uRecoverEmail').value;
+            const btn = isResend ? document.getElementById('btnResendUserOtp') : document.getElementById('btnSendOtpUser');
+
+            if (!email) return showAlert('error', 'Missing Input', 'Please enter your registered email address.');
+
+            const originalText = btn.innerText;
+            btn.innerText = isResend ? "Resending..." : "Sending...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}/user/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('uStep1').style.display = 'none';
+                    document.getElementById('uStep2').style.display = 'block';
+                    if (!isResend) startUserResendCooldown();
+                } else {
+                    showAlert('error', 'Failed', data.message || 'Could not send verification code.');
+                }
+            } catch (e) {
+                showAlert('error', 'Error', 'Server connection failed. Please ensure backend is running.');
+            } finally {
+                btn.innerText = originalText;
+                if (!isResend) btn.disabled = false;
+            }
+        }
+
+        async function resetUserPass() {
+            const email = document.getElementById('uRecoverEmail').value;
+            const otp = document.getElementById('uOtp').value;
+            const newPassword = document.getElementById('uNewPass').value;
+            const btn = document.getElementById('btnResetUser');
+
+            if (!otp || !newPassword) return showAlert('error', 'Missing Fields', 'Please enter the 6-digit OTP and new password.');
+
+            btn.innerText = "Updating...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}/user/reset-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp, newPassword })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('uForgotModal').style.display = 'none';
+                    document.getElementById('passwordSuccessModal').style.display = 'flex';
+                } else {
+                    showAlert('error', 'Failed', data.message || 'Invalid or expired OTP.');
+                }
+            } catch (e) {
+                showAlert('error', 'Error', 'Server error occurred.');
+            } finally {
+                btn.innerText = "Update Password";
+                btn.disabled = false;
+            }
+        }
+
+        function finishPasswordReset() {
+            document.getElementById('passwordSuccessModal').style.display = 'none';
+            toggleView('login');
+        }
+    </script>
 </body>
 
 </html>

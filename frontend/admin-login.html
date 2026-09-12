@@ -614,7 +614,9 @@
     </div>
 
     <script>
-        const API_URL = '/api';
+        const API_URL = (window.location.port === '5000' || (window.location.port === '' && window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost'))
+            ? '/api'
+            : 'http://localhost:5000/api';
 
         function showError(title, message) {
             document.getElementById('modalTitle').innerText = title;
@@ -650,6 +652,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ usernameOrEmail, password })
                 });
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error("Backend server is not running on http://localhost:5000. Please launch it with start.bat!");
+                }
 
                 const result = await response.json();
 
@@ -706,6 +713,13 @@
                 <button onclick="resetAdminPass()" id="resetBtn" class="modal-action-btn">
                     Reset Password
                 </button>
+
+                <div style="margin-top: 14px; text-align: center;">
+                    <button type="button" id="btnResendAdminOtp" onclick="resendAdminOTP()" style="background:none; border:none; color:var(--primary, #2A74ED); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline;">
+                        Resend OTP (3 left)
+                    </button>
+                    <div id="resendAdminTimer" style="font-size:12px; color:#64748b; margin-top:3px;"></div>
+                </div>
             </div>
 
             <button onclick="closeForgotModal()" class="modal-cancel-btn">Cancel Recovery</button>
@@ -713,29 +727,90 @@
     </div>
 
     <script>
+        let adminResendCount = 3;
+        let adminResendInterval = null;
+
         function openForgotModal() {
             document.getElementById('forgotModal').style.display = 'flex';
             document.getElementById('step1').style.display = 'block';
             document.getElementById('step2').style.display = 'none';
             document.getElementById('recoverEmail').value = '';
+            document.getElementById('otpCode').value = '';
+            document.getElementById('newPass').value = '';
+            adminResendCount = 3;
+            if (adminResendInterval) clearInterval(adminResendInterval);
+            const resendBtn = document.getElementById('btnResendAdminOtp');
+            if (resendBtn) {
+                resendBtn.disabled = false;
+                resendBtn.style.opacity = '1';
+                resendBtn.style.cursor = 'pointer';
+                resendBtn.innerText = "Resend OTP (3 left)";
+            }
+            const timerEl = document.getElementById('resendAdminTimer');
+            if (timerEl) timerEl.innerText = '';
         }
 
         function closeForgotModal() {
             document.getElementById('forgotModal').style.display = 'none';
         }
 
-        async function sendAdminOTP() {
+        function startAdminResendCooldown() {
+            const btn = document.getElementById('btnResendAdminOtp');
+            const timerEl = document.getElementById('resendAdminTimer');
+            if (!btn || !timerEl) return;
+
+            if (adminResendCount <= 0) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.style.textDecoration = 'none';
+                btn.innerText = "No resends remaining";
+                timerEl.innerText = "Please wait or contact support.";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.style.cursor = 'not-allowed';
+
+            let seconds = 30;
+            timerEl.innerText = `Wait ${seconds}s to resend (${adminResendCount} left)`;
+
+            if (adminResendInterval) clearInterval(adminResendInterval);
+            adminResendInterval = setInterval(() => {
+                seconds--;
+                if (seconds > 0) {
+                    timerEl.innerText = `Wait ${seconds}s to resend (${adminResendCount} left)`;
+                } else {
+                    clearInterval(adminResendInterval);
+                    timerEl.innerText = '';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.innerText = `Resend OTP (${adminResendCount} left)`;
+                }
+            }, 1000);
+        }
+
+        async function resendAdminOTP() {
+            if (adminResendCount <= 0) return;
+            adminResendCount--;
+            await sendAdminOTP(true);
+            startAdminResendCooldown();
+        }
+
+        async function sendAdminOTP(isResend = false) {
             const email = document.getElementById('recoverEmail').value;
-            const btn = document.getElementById('sendOtpBtn');
+            const btn = isResend ? document.getElementById('btnResendAdminOtp') : document.getElementById('sendOtpBtn');
 
             if (!email) return alert("Please enter your email.");
 
             const originalText = btn.innerText;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending...';
+            btn.innerHTML = isResend ? '<i class="fas fa-circle-notch fa-spin"></i> Resending...' : '<i class="fas fa-circle-notch fa-spin"></i> Sending...';
             btn.disabled = true;
 
             try {
-                const res = await fetch('/api/admin/forgot-password', {
+                const res = await fetch(`${API_URL}/admin/forgot-password`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
@@ -744,13 +819,14 @@
                 if (data.success) {
                     document.getElementById('step1').style.display = 'none';
                     document.getElementById('step2').style.display = 'block';
+                    if (!isResend) startAdminResendCooldown();
                 } else {
                     alert(data.message || "Failed to send OTP.");
                 }
             } catch (e) { alert("Server connection failed."); }
 
             btn.innerHTML = originalText;
-            btn.disabled = false;
+            if (!isResend) btn.disabled = false;
         }
 
         async function resetAdminPass() {
